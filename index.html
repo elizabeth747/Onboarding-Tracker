@@ -3,2683 +3,392 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Onboarding Tracker</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"
-    />
+    <title>Onboarding Tracker - Real-Time</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
     <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
       :root {
-        --bg: #f9f8f6;
-        --surface: #fff;
-        --surface2: #f2f1ee;
-        --border: rgba(0, 0, 0, 0.09);
-        --border2: rgba(0, 0, 0, 0.16);
-        --text: #1a1a18;
-        --text2: #6b6a66;
-        --text3: #a09f9b;
-        --green: #1d9e75;
-        --green-bg: #e1f5ee;
-        --green-text: #085041;
-        --red: #993c1d;
-        --red-bg: #faece7;
-        --red-text: #993c1d;
-        --blue: #185fa5;
-        --blue-bg: #e6f1fb;
-        --blue-text: #185fa5;
-        --neil: #534ab7;
-        --neil-bg: #eeedfe;
-        --neil-text: #26215c;
-        --jacob: #b85a30;
-        --jacob-bg: #faece7;
-        --jacob-text: #4a1b0c;
-        --r: 8px;
-        --rl: 12px;
+        --bg: #f9f8f6; --surface: #fff; --surface2: #f2f1ee; --border: rgba(0, 0, 0, 0.09);
+        --border2: rgba(0, 0, 0, 0.16); --text: #1a1a18; --text2: #6b6a66; --text3: #a09f9b;
+        --green: #1d9e75; --green-bg: #e1f5ee; --green-text: #085041; --red: #993c1d;
+        --red-bg: #faece7; --red-text: #993c1d; --blue: #185fa5; --blue-bg: #e6f1fb;
+        --blue-text: #185fa5; --neil: #534ab7; --neil-bg: #eeedfe; --neil-text: #26215c;
+        --jacob: #b85a30; --jacob-bg: #faece7; --jacob-text: #4a1b0c; --r: 8px; --rl: 12px;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #1a1a18;
-          --surface: #242422;
-          --surface2: #2e2e2b;
-          --border: rgba(255, 255, 255, 0.09);
-          --border2: rgba(255, 255, 255, 0.16);
-          --text: #f0ede8;
-          --text2: #9e9d99;
-          --text3: #6b6a66;
-          --green-bg: #04342c;
-          --green-text: #9fe1cb;
-          --red-bg: #4a1b0c;
-          --red-text: #f0997b;
-          --blue-bg: #042c53;
-          --blue-text: #85b7eb;
-          --neil-bg: #26215c;
-          --neil-text: #cecbf6;
-          --jacob-bg: #4a1b0c;
-          --jacob-text: #f5c4b3;
+          --bg: #1a1a18; --surface: #242422; --surface2: #2e2e2b; --border: rgba(255, 255, 255, 0.09);
+          --border2: rgba(255, 255, 255, 0.16); --text: #f0ede8; --text2: #9e9d99; --text3: #6b6a66;
+          --green-bg: #04342c; --green-text: #9fe1cb; --red-bg: #4a1b0c; --red-text: #f0997b;
+          --blue-bg: #042c53; --blue-text: #85b7eb; --neil-bg: #26215c; --neil-text: #cecbf6;
+          --jacob-bg: #4a1b0c; --jacob-text: #f5c4b3;
         }
       }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-      }
-
-      nav {
-        background: var(--surface);
-        border-bottom: 0.5px solid var(--border2);
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        padding: 0 1.25rem;
-      }
-      .nav-inner {
-        max-width: 1140px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        height: 52px;
-      }
-      .app-name {
-        font-size: 15px;
-        font-weight: 500;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-
-      .partner-tabs {
-        display: flex;
-        gap: 3px;
-        margin-left: 12px;
-      }
-      .ptab {
-        padding: 5px 16px;
-        border-radius: var(--r);
-        border: none;
-        font-size: 13px;
-        cursor: pointer;
-        background: transparent;
-        color: var(--text2);
-        font-family: inherit;
-        transition: all 0.15s;
-        font-weight: 500;
-      }
-      .ptab[data-p="neil"].active {
-        background: var(--neil-bg);
-        color: var(--neil-text);
-      }
-      .ptab[data-p="jacob"].active {
-        background: var(--jacob-bg);
-        color: var(--jacob-text);
-      }
-      .ptab:hover:not(.active) {
-        background: var(--surface2);
-      }
-
-      .nav-tabs {
-        display: flex;
-        gap: 2px;
-        margin-left: auto;
-      }
-      .nav-tab {
-        padding: 5px 13px;
-        border-radius: var(--r);
-        border: none;
-        font-size: 13px;
-        cursor: pointer;
-        background: transparent;
-        color: var(--text2);
-        font-family: inherit;
-        transition: all 0.15s;
-      }
-      .nav-tab.active {
-        background: var(--surface2);
-        color: var(--text);
-        font-weight: 500;
-      }
-      .nav-tab:hover:not(.active) {
-        background: var(--surface2);
-      }
-      .nav-tab#tab-client {
-        display: none;
-      }
-
-      .nav-add {
-        padding: 5px 12px;
-        border-radius: var(--r);
-        border: 0.5px dashed var(--border2);
-        font-size: 13px;
-        cursor: pointer;
-        background: transparent;
-        color: var(--text3);
-        font-family: inherit;
-        transition: all 0.15s;
-        white-space: nowrap;
-      }
-      .nav-add:hover {
-        color: var(--text2);
-        border-color: var(--text3);
-      }
-      #sync-status {
-        font-size: 11px;
-        color: var(--text3);
-        white-space: nowrap;
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        transition: opacity 0.3s;
-      }
-      #sync-status .sync-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--text3);
-        display: inline-block;
-        flex-shrink: 0;
-      }
-      #sync-status.saving .sync-dot {
-        background: #f59e0b;
-        animation: pulse-dot 0.8s infinite alternate;
-      }
-      #sync-status.saved .sync-dot {
-        background: #22c55e;
-      }
-      #sync-status.updated .sync-dot {
-        background: #3b82f6;
-      }
-      @keyframes pulse-dot {
-        from {
-          opacity: 0.4;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      main {
-        max-width: 1140px;
-        margin: 0 auto;
-        padding: 1.5rem 1.25rem;
-      }
-
-      .partner-badge {
-        display: inline-block;
-        font-size: 11px;
-        font-weight: 500;
-        padding: 2px 8px;
-        border-radius: 20px;
-        margin-left: 6px;
-        vertical-align: 1px;
-      }
-      .badge-neil {
-        background: var(--neil-bg);
-        color: var(--neil-text);
-      }
-      .badge-jacob {
-        background: var(--jacob-bg);
-        color: var(--jacob-text);
-      }
-
-      .dash-section-hd {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 0.75rem;
-      }
-      .dash-section-hd h2 {
-        font-size: 14px;
-        font-weight: 500;
-        white-space: nowrap;
-      }
-      .divider {
-        flex: 1;
-        height: 0.5px;
-        background: var(--border);
-      }
-      .dash-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-        gap: 10px;
-        margin-bottom: 1.5rem;
-      }
-      .client-card {
-        background: var(--surface);
-        border: 0.5px solid var(--border);
-        border-radius: var(--rl);
-        padding: 0.9rem 1rem;
-        cursor: pointer;
-        transition: border-color 0.15s;
-      }
-      .client-card:hover {
-        border-color: var(--border2);
-      }
-      .cc-name {
-        font-size: 13.5px;
-        font-weight: 500;
-        margin-bottom: 1px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .cc-date {
-        font-size: 11px;
-        color: var(--text3);
-        margin-bottom: 9px;
-      }
-      .cc-bar-bg {
-        height: 3px;
-        background: var(--border);
-        border-radius: 2px;
-        margin-bottom: 5px;
-      }
-      .cc-bar-fill {
-        height: 3px;
-        border-radius: 2px;
-      }
-      .cc-pct {
-        font-size: 13px;
-        font-weight: 500;
-      }
-      .cc-meta {
-        font-size: 11px;
-        color: var(--text3);
-        margin-top: 3px;
-      }
-      .blocker-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--red);
-        display: inline-block;
-        margin-right: 3px;
-        vertical-align: 1px;
-      }
-      .drive-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 11px;
-        color: var(--text3);
-        text-decoration: none;
-        padding: 3px 7px;
-        border-radius: var(--r);
-        border: 0.5px solid transparent;
-        transition: all 0.15s;
-        white-space: nowrap;
-      }
-      .drive-btn:hover {
-        background: var(--blue-bg);
-        color: var(--blue-text);
-        border-color: var(--blue-text);
-      }
-      .drive-btn svg {
-        width: 12px;
-        height: 12px;
-        flex-shrink: 0;
-      }
-      .drive-btn-lg {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        color: var(--text2);
-        text-decoration: none;
-        padding: 5px 11px;
-        border-radius: var(--r);
-        border: 0.5px solid var(--border2);
-        background: var(--surface);
-        transition: all 0.15s;
-      }
-      .drive-btn-lg:hover {
-        background: var(--blue-bg);
-        color: var(--blue-text);
-        border-color: var(--blue-text);
-      }
-      .drive-btn-lg svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-      }
-      .drive-link-row {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-top: 6px;
-        padding-top: 6px;
-        border-top: 0.5px solid var(--border);
-      }
-      .drive-link-input {
-        flex: 1;
-        font-size: 11px;
-        color: var(--text2);
-        background: transparent;
-        border: none;
-        outline: none;
-        font-family: inherit;
-        min-width: 0;
-        cursor: pointer;
-      }
-      .drive-link-input::placeholder {
-        color: var(--text3);
-      }
-      .drive-link-input:focus {
-        color: var(--text);
-      }
-      .drive-link-saved {
-        font-size: 11px;
-        color: var(--green-text);
-        display: flex;
-        align-items: center;
-        gap: 3px;
-      }
-      .drive-clear-btn {
-        font-size: 11px;
-        color: var(--text3);
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0 2px;
-        line-height: 1;
-        flex-shrink: 0;
-      }
-      .drive-clear-btn:hover {
-        color: var(--red-text);
-      }
-      .client-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        margin-top: 6px;
-      }
-      .ctag {
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        cursor: pointer;
-        border: 0.5px solid transparent;
-        transition: all 0.15s;
-        white-space: nowrap;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-      }
-      .ctag-remove {
-        opacity: 0;
-        font-size: 10px;
-        line-height: 1;
-        transition: opacity 0.15s;
-      }
-      .ctag:hover .ctag-remove {
-        opacity: 1;
-      }
-      .ctag-add {
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        border: 0.5px dashed var(--border2);
-        color: var(--text3);
-        cursor: pointer;
-        background: transparent;
-        font-family: inherit;
-        transition: all 0.15s;
-        white-space: nowrap;
-      }
-      .ctag-add:hover {
-        border-color: var(--text2);
-        color: var(--text2);
-      }
-      .tag-filter-bar {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-        padding: 10px 14px;
-        background: var(--surface);
-        border: 0.5px solid var(--border);
-        border-radius: var(--rl);
-      }
-      .tag-filter-label {
-        font-size: 11px;
-        color: var(--text3);
-        white-space: nowrap;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .tag-filter-btn {
-        font-size: 11px;
-        padding: 3px 10px;
-        border-radius: 20px;
-        border: 0.5px solid var(--border2);
-        background: var(--surface);
-        color: var(--text2);
-        cursor: pointer;
-        font-family: inherit;
-        transition: all 0.15s;
-        white-space: nowrap;
-      }
-      .tag-filter-btn.active {
-        border-color: transparent;
-      }
-      .tag-filter-btn.clear-tags {
-        color: var(--text3);
-        border-style: dashed;
-      }
-      .tag-filter-btn.clear-tags:hover {
-        color: var(--red-text);
-        border-color: var(--red-text);
-      }
-      .tag-dropdown {
-        position: absolute;
-        background: var(--surface);
-        border: 0.5px solid var(--border2);
-        border-radius: var(--rl);
-        padding: 6px;
-        z-index: 100;
-        min-width: 180px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-      }
-      .tag-dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 5px 8px;
-        border-radius: var(--r);
-        cursor: pointer;
-        font-size: 13px;
-        transition: background 0.1s;
-      }
-      .tag-dropdown-item:hover {
-        background: var(--surface2);
-      }
-      .tag-dropdown-new {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 8px;
-        border-top: 0.5px solid var(--border);
-        margin-top: 4px;
-      }
-      .tag-dropdown-input {
-        flex: 1;
-        font-size: 12px;
-        background: transparent;
-        border: none;
-        outline: none;
-        font-family: inherit;
-        color: var(--text);
-      }
-      .tag-dropdown-input::placeholder {
-        color: var(--text3);
-      }
-      .tag-color-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        flex-shrink: 0;
-      }
-
-      .phase-overview-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-        gap: 10px;
-        margin-bottom: 1.75rem;
-      }
-      .phase-card {
-        background: var(--surface);
-        border: 0.5px solid var(--border);
-        border-radius: var(--rl);
-        padding: 0.9rem 1rem;
-      }
-      .phase-card-name {
-        font-size: 13px;
-        font-weight: 500;
-        margin-bottom: 2px;
-      }
-      .phase-card-sub {
-        font-size: 11px;
-        color: var(--text3);
-        margin-bottom: 8px;
-      }
-
-      .stat-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
-        gap: 10px;
-        margin-bottom: 1.25rem;
-      }
-      .stat {
-        background: var(--surface2);
-        border-radius: var(--r);
-        padding: 10px 13px;
-      }
-      .stat-lbl {
-        font-size: 11px;
-        color: var(--text2);
-        margin-bottom: 3px;
-      }
-      .stat-val {
-        font-size: 20px;
-        font-weight: 500;
-      }
-      .stat-bar {
-        height: 3px;
-        background: var(--border);
-        border-radius: 2px;
-        margin-top: 6px;
-      }
-      .stat-fill {
-        height: 3px;
-        border-radius: 2px;
-      }
-
-      .blocker-banner {
-        display: none;
-        background: var(--red-bg);
-        border: 0.5px solid var(--red);
-        border-radius: var(--r);
-        padding: 9px 13px;
-        margin-bottom: 1rem;
-        font-size: 13px;
-        color: var(--red-text);
-        align-items: center;
-        gap: 8px;
-      }
-      .blocker-banner.show {
-        display: flex;
-      }
-      .start-warning-banner {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        background: #fef9ec;
-        border: 0.5px solid #d4a017;
-        border-radius: var(--rl);
-        padding: 11px 14px;
-        margin-bottom: 1rem;
-        font-size: 13px;
-        color: #7a5700;
-      }
-      @media (prefers-color-scheme: dark) {
-        .start-warning-banner {
-          background: #3a2c00;
-          border-color: #c49a00;
-          color: #fad76b;
-        }
-      }
-      .start-warning-banner ul {
-        margin: 4px 0 0 4px;
-        padding: 0;
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-      }
-      .start-warning-banner li {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-      }
-      .soon-badge {
-        font-size: 10px;
-        font-weight: 600;
-        padding: 1px 6px;
-        border-radius: 20px;
-        white-space: nowrap;
-      }
-      .soon-today {
-        background: #e53935;
-        color: #fff;
-      }
-      .soon-tomorrow {
-        background: #f4511e;
-        color: #fff;
-      }
-      .soon-days {
-        background: #d4a017;
-        color: #fff;
-      }
-      .cc-date-warn {
-        font-size: 11px;
-        margin-bottom: 9px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-      .archive-banner {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--surface2);
-        border: 0.5px solid var(--border);
-        border-radius: var(--rl);
-        padding: 10px 14px;
-        margin-bottom: 1rem;
-        font-size: 13px;
-        color: var(--text2);
-        cursor: pointer;
-        transition: background 0.15s;
-      }
-      .archive-banner:hover {
-        background: var(--surface3, #e0deda);
-      }
-      .archive-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-        gap: 10px;
-        margin-bottom: 1.5rem;
-      }
-      .archive-card {
-        background: var(--surface);
-        border: 0.5px solid var(--border);
-        border-radius: var(--rl);
-        padding: 0.9rem 1rem;
-        opacity: 0.65;
-        transition: opacity 0.15s;
-      }
-      .archive-card:hover {
-        opacity: 1;
-      }
-      .date-edit-input {
-        font-size: 11px;
-        color: var(--text);
-        background: var(--surface);
-        border: 0.5px solid var(--border2);
-        border-radius: var(--r);
-        padding: 2px 7px;
-        font-family: inherit;
-        outline: none;
-        width: 90px;
-      }
-      .edit-date-btn {
-        font-size: 10px;
-        color: var(--text3);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-family: inherit;
-        padding: 0 3px;
-        transition: color 0.15s;
-      }
-      .edit-date-btn:hover {
-        color: var(--text2);
-      }
-      .unarchive-btn {
-        font-size: 11px;
-        color: var(--text3);
-        background: none;
-        border: 0.5px solid var(--border2);
-        border-radius: var(--r);
-        cursor: pointer;
-        font-family: inherit;
-        padding: 3px 8px;
-        transition: all 0.15s;
-        margin-top: 6px;
-      }
-      .unarchive-btn:hover {
-        color: var(--text);
-        border-color: var(--text2);
-      }
-      .archive-client-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        color: var(--text3);
-        background: none;
-        border: 0.5px solid var(--border2);
-        border-radius: var(--r);
-        cursor: pointer;
-        font-family: inherit;
-        padding: 5px 12px;
-        transition: all 0.15s;
-      }
-      .archive-client-btn:hover {
-        color: var(--red-text);
-        border-color: var(--red-text);
-        background: var(--red-bg);
-      }
-
-      .filter-row {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-        margin-bottom: 1rem;
-        align-items: center;
-      }
-      .filter-btn {
-        font-size: 12px;
-        padding: 4px 12px;
-        border-radius: 20px;
-        border: 0.5px solid var(--border2);
-        background: var(--surface);
-        color: var(--text2);
-        cursor: pointer;
-        transition: all 0.15s;
-        font-family: inherit;
-      }
-      .filter-btn.active {
-        background: var(--surface2);
-        color: var(--text);
-        border-color: var(--border2);
-      }
-      .btn-sm {
-        padding: 5px 11px;
-        border-radius: var(--r);
-        border: 0.5px solid var(--border2);
-        font-size: 12px;
-        cursor: pointer;
-        background: var(--surface);
-        color: var(--text2);
-        font-family: inherit;
-        transition: all 0.15s;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-      }
-      .btn-sm:hover {
-        background: var(--surface2);
-        color: var(--text);
-      }
-      .btn-primary {
-        background: var(--text);
-        color: var(--bg);
-        border-color: var(--text);
-      }
-      .btn-primary:hover {
-        opacity: 0.85;
-      }
-
-      .phase-block {
-        margin-bottom: 1rem;
-      }
-      .phase-hd {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 5px 0;
-        user-select: none;
-      }
-      .phase-chevron {
-        font-size: 14px;
-        color: var(--text3);
-        transition: transform 0.2s;
-        cursor: pointer;
-        flex-shrink: 0;
-      }
-      .phase-chevron.open {
-        transform: rotate(90deg);
-      }
-      .phase-name-edit {
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--text2);
-        flex: 1;
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid transparent;
-        padding: 1px 2px;
-        font-family: inherit;
-        outline: none;
-      }
-      .phase-name-edit:hover,
-      .phase-name-edit:focus {
-        border-bottom-color: var(--border2);
-      }
-      .phase-prog {
-        font-size: 12px;
-        color: var(--text3);
-      }
-
-      .task-list {
-        border: 0.5px solid var(--border);
-        border-radius: var(--rl);
-        overflow: hidden;
-        background: var(--surface);
-      }
-      .task-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 9px 13px;
-        border-bottom: 0.5px solid var(--border);
-        background: var(--surface);
-        transition: background 0.1s;
-      }
-      .task-row:last-child {
-        border-bottom: none;
-      }
-      .task-row.done .task-name-text {
-        text-decoration: line-through;
-        color: var(--text3);
-      }
-      .task-row.drag-over {
-        background: var(--blue-bg);
-      }
-      .drag-handle {
-        color: var(--text3);
-        cursor: grab;
-        font-size: 16px;
-        flex-shrink: 0;
-      }
-      .drag-handle:active {
-        cursor: grabbing;
-      }
-      .task-check {
-        width: 18px;
-        height: 18px;
-        border: 1.5px solid var(--border2);
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-      .task-row.done .task-check {
-        background: var(--green);
-        border-color: var(--green);
-      }
-      .task-check i {
-        font-size: 11px;
-        color: white;
-        display: none;
-      }
-      .task-row.done .task-check i {
-        display: block;
-      }
-      .task-body {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        flex-wrap: wrap;
-      }
-      .task-name-text {
-        font-size: 13.5px;
-        color: var(--text);
-        cursor: text;
-      }
-      .task-name-input {
-        font-size: 13.5px;
-        color: var(--text);
-        background: transparent;
-        border: none;
-        border-bottom: 1px solid var(--border2);
-        outline: none;
-        font-family: inherit;
-        min-width: 180px;
-      }
-      .tag {
-        font-size: 11px;
-        padding: 2px 7px;
-        border-radius: 20px;
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .tag i {
-        font-size: 10px;
-      }
-      .tag-blocker {
-        background: var(--red-bg);
-        color: var(--red-text);
-      }
-      .owner-badge {
-        font-size: 11px;
-        color: var(--text3);
-        cursor: pointer;
-        padding: 2px 6px;
-        border-radius: var(--r);
-        border: 0.5px solid transparent;
-        transition: all 0.15s;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .owner-badge:hover {
-        border-color: var(--border2);
-        background: var(--surface2);
-        color: var(--text2);
-      }
-      .owner-select {
-        font-size: 11px;
-        color: var(--text);
-        background: var(--surface);
-        border: 0.5px solid var(--border2);
-        border-radius: var(--r);
-        padding: 2px 5px;
-        font-family: inherit;
-        cursor: pointer;
-        outline: none;
-      }
-      .task-actions {
-        display: flex;
-        gap: 3px;
-        margin-left: auto;
-        flex-shrink: 0;
-        opacity: 0;
-        transition: opacity 0.15s;
-      }
-      .task-row:hover .task-actions {
-        opacity: 1;
-      }
-      .icon-btn {
-        width: 26px;
-        height: 26px;
-        border-radius: var(--r);
-        border: none;
-        background: transparent;
-        color: var(--text3);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 15px;
-        transition: all 0.15s;
-      }
-      .icon-btn:hover {
-        background: var(--surface2);
-        color: var(--text2);
-      }
-      .icon-btn.is-red {
-        color: var(--red);
-      }
-      .icon-btn.del:hover {
-        background: var(--red-bg);
-        color: var(--red-text);
-      }
-      .add-task-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 13px;
-        border-top: 0.5px solid var(--border);
-        background: var(--surface);
-      }
-      .add-task-input {
-        flex: 1;
-        font-size: 13px;
-        color: var(--text);
-        background: transparent;
-        border: none;
-        outline: none;
-        font-family: inherit;
-      }
-      .add-task-input::placeholder {
-        color: var(--text3);
-      }
-
-      .modal-bg {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 200;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-      }
-      .modal-bg.show {
-        display: flex;
-      }
-      .modal {
-        background: var(--surface);
-        border-radius: var(--rl);
-        border: 0.5px solid var(--border2);
-        padding: 1.5rem;
-        width: 100%;
-        max-width: 360px;
-      }
-      .modal h3 {
-        font-size: 15px;
-        font-weight: 500;
-        margin-bottom: 1rem;
-      }
-      .modal label {
-        font-size: 12px;
-        color: var(--text2);
-        display: block;
-        margin-top: 10px;
-        margin-bottom: 3px;
-      }
-      .modal input,
-      .modal select {
-        width: 100%;
-        padding: 7px 10px;
-        border-radius: var(--r);
-        border: 0.5px solid var(--border2);
-        background: var(--bg);
-        color: var(--text);
-        font-size: 13px;
-        font-family: inherit;
-        outline: none;
-      }
-      .modal-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 1.1rem;
-        justify-content: flex-end;
-      }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+      nav { background: var(--surface); border-bottom: 0.5px solid var(--border2); position: sticky; top: 0; z-index: 50; padding: 0 1.25rem; }
+      .nav-inner { max-width: 1140px; margin: 0 auto; display: flex; align-items: center; gap: 10px; height: 52px; }
+      .app-name { font-size: 15px; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+      .nav-add { padding: 5px 12px; border-radius: var(--r); border: 0.5px dashed var(--border2); font-size: 13px; cursor: pointer; background: transparent; color: var(--text3); font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+      .nav-add:hover { color: var(--text2); border-color: var(--text3); }
+      #sync-status { font-size: 11px; color: var(--text3); white-space: nowrap; margin-left: auto; display: flex; align-items: center; gap: 5px; transition: opacity 0.3s; }
+      #sync-status .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); display: inline-block; flex-shrink: 0; }
+      #sync-status.saving .sync-dot { background: #f59e0b; animation: pulse-dot 0.8s infinite alternate; }
+      #sync-status.saved .sync-dot { background: #22c55e; }
+      #sync-status.updated .sync-dot { background: #3b82f6; }
+      @keyframes pulse-dot { from { opacity: 0.4; } to { opacity: 1; } }
+      main { max-width: 1140px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+      .dash-section-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+      .dash-section-hd h2 { font-size: 14px; font-weight: 500; white-space: nowrap; }
+      .divider { flex: 1; height: 0.5px; background: var(--border); }
+      .dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+      .client-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--rl); padding: 0.9rem 1rem; cursor: pointer; transition: border-color 0.15s; }
+      .client-card:hover { border-color: var(--border2); }
+      .cc-name { font-size: 13.5px; font-weight: 500; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .cc-date { font-size: 11px; color: var(--text3); margin-bottom: 9px; }
+      .task-list { border: 0.5px solid var(--border); border-radius: var(--rl); overflow: hidden; background: var(--surface); }
+      .task-row { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border-bottom: 0.5px solid var(--border); background: var(--surface); transition: background 0.1s; }
+      .task-row:last-child { border-bottom: none; }
+      .task-row.done .task-name-text { text-decoration: line-through; color: var(--text3); }
+      .task-check { width: 18px; height: 18px; border: 1.5px solid var(--border2); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: all 0.15s; }
+      .task-row.done .task-check { background: var(--green); border-color: var(--green); }
+      .task-check i { font-size: 11px; color: white; display: none; }
+      .task-row.done .task-check i { display: block; }
+      .task-body { flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+      .task-name-text { font-size: 13.5px; color: var(--text); cursor: text; }
+      .task-actions { display: flex; gap: 3px; margin-left: auto; flex-shrink: 0; opacity: 0; transition: opacity 0.15s; }
+      .task-row:hover .task-actions { opacity: 1; }
+      .icon-btn { width: 26px; height: 26px; border-radius: var(--r); border: none; background: transparent; color: var(--text3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.15s; }
+      .icon-btn:hover { background: var(--surface2); color: var(--text2); }
+      .btn-sm { padding: 5px 11px; border-radius: var(--r); border: 0.5px solid var(--border2); font-size: 12px; cursor: pointer; background: var(--surface); color: var(--text2); font-family: inherit; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+      .btn-sm:hover { background: var(--surface2); color: var(--text); }
+      .phase-block { margin-bottom: 1rem; }
+      .phase-hd { display: flex; align-items: center; gap: 8px; padding: 5px 0; user-select: none; }
+      .phase-name { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2); flex: 1; }
+      .phase-prog { font-size: 12px; color: var(--text3); }
+      .back-btn { margin-top: 1rem; }
     </style>
   </head>
   <body>
     <nav>
       <div class="nav-inner">
-        <span class="app-name">Onboarding tracker</span>
-        <div class="partner-tabs">
-          <button class="ptab active" data-p="neil">Neil</button>
-          <button class="ptab" data-p="jacob">Jacob</button>
+        <div class="app-name">Onboarding Tracker</div>
+        <button class="nav-add">+ Add</button>
+        <div id="sync-status">
+          <span class="sync-dot"></span>
+          <span id="sync-text">Ready</span>
         </div>
-        <div class="nav-tabs">
-          <button class="nav-tab active" id="tab-dash">Dashboard</button>
-          <button class="nav-tab" id="tab-client"></button>
-        </div>
-        <span id="sync-status"></span>
-        <button class="nav-add" id="add-client-btn">
-          <i class="ti ti-plus" aria-hidden="true"></i> Add client
-        </button>
       </div>
     </nav>
     <main id="main"></main>
 
-    <div class="modal-bg" id="modal-client">
-      <div class="modal">
-        <h3>Add new client</h3>
-        <label>Client name</label
-        ><input type="text" id="mc-name" placeholder="e.g. Jane Smith" />
-        <label>Start date</label
-        ><input type="text" id="mc-date" placeholder="e.g. Jun 3" />
-        <label
-          >Google Drive folder URL
-          <span style="color: var(--text3); font-weight: 400"
-            >(optional)</span
-          ></label
-        ><input type="url" id="mc-drive" placeholder="Paste folder link…" />
-        <div class="modal-actions">
-          <button class="btn-sm" id="mc-cancel">Cancel</button>
-          <button class="btn-sm btn-primary" id="mc-save">Add client</button>
-        </div>
-      </div>
-    </div>
-    <div class="modal-bg" id="modal-phase">
-      <div class="modal">
-        <h3>Add new phase</h3>
-        <label>Phase name</label
-        ><input type="text" id="mp-name" placeholder="e.g. Legal review" />
-        <div class="modal-actions">
-          <button class="btn-sm" id="mp-cancel">Cancel</button>
-          <button class="btn-sm btn-primary" id="mp-save">Add phase</button>
-        </div>
-      </div>
-    </div>
-    <div class="modal-bg" id="modal-reassign">
-      <div class="modal">
-        <h3>Move task to another phase</h3>
-        <label>Destination phase</label
-        ><select id="mr-phase"></select>
-        <div class="modal-actions">
-          <button class="btn-sm" id="mr-cancel">Cancel</button>
-          <button class="btn-sm btn-primary" id="mr-save">Move</button>
-        </div>
-      </div>
-    </div>
+    <script type="module">
+      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-    <script>
-      const OWNERS = ["Partner", "Elizabeth", "Jessica"];
-      const NEIL_COLORS = [
-        "#534AB7",
-        "#8F3456",
-        "#185FA5",
-        "#1D9E75",
-        "#B47015",
-        "#5F5E5A",
-      ];
-      const JACOB_COLORS = [
-        "#B85A30",
-        "#3B6D11",
-        "#185FA5",
-        "#8F3456",
-        "#534AB7",
-        "#854F0B",
-        "#5F5E5A",
-      ];
+      // Supabase Configuration
+      const SUPABASE_URL = 'https://hwscukgdmdjadpsxdqcs.supabase.co'
+      const SUPABASE_ANON_KEY = 'sb_publishable_CYvT963Rrl-bqzPHTJyXHA_jrZAZi_9'
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-      const DEFAULT_PHASES = [
-        {
-          id: "pre",
-          label: "Pre-start",
-          tasks: [
-            {
-              id: "contract",
-              name: "Contract signed",
-              owner: "Partner",
-              blocker: true,
-            },
-            {
-              id: "monday_move",
-              name: "monday.com move to onboarding",
-              owner: "Jessica",
-              blocker: false,
-            },
-            {
-              id: "text_exp",
-              name: "Text Expander for name",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "gmail",
-              name: "Gmail label / filter created",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "google_alerts",
-              name: "Google Alerts made for candidate, opponent & office",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "monday_sched",
-              name: "Schedule created on monday.com",
-              owner: "Jessica",
-              blocker: false,
-            },
-            {
-              id: "capacity",
-              name: "Correct on capacity planning",
-              owner: "Partner",
-              blocker: false,
-            },
-          ],
-        },
-        {
-          id: "comms",
-          label: "Communications setup",
-          tasks: [
-            {
-              id: "onboard_meet",
-              name: "Onboarding meeting scheduled",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "bio_call",
-              name: "Biography call meeting scheduled",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "gcal",
-              name: "Archive GCal has dates",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "draft_perms",
-              name: "All draft text doc correct permissions",
-              owner: "Jessica",
-              blocker: false,
-            },
-            {
-              id: "google_group",
-              name: "Google Group has everyone necessary",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "phone_rolo",
-              name: "Phone rolodexed",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-            {
-              id: "misc_lists",
-              name: "Misc lists recombobulated",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-          ],
-        },
-        {
-          id: "registration",
-          label: "Registration",
-          tasks: [
-            {
-              id: "ab_access",
-              name: "AB access granted",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "preset_abx",
-              name: "Preset + ABX + make AB pages email sent",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-            {
-              id: "campaign_verify",
-              name: "CampaignVerify email to Jessica",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-            {
-              id: "sb_req",
-              name: "SB requested",
-              owner: "Jessica",
-              blocker: false,
-            },
-            {
-              id: "ab_webhook",
-              name: "AB <> SB Webhook connected",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-            {
-              id: "switchboard",
-              name: "Switchboard 10DLC/Tollfree Form submitted",
-              owner: "Jessica",
-              blocker: false,
-            },
-            {
-              id: "add_list",
-              name: "Add myself to their list",
-              owner: "Partner",
-              blocker: false,
-            },
-          ],
-        },
-        {
-          id: "email_setup",
-          label: "Email Set-Up",
-          tasks: [
-            {
-              id: "crm_email",
-              name: "Email CRM access",
-              owner: "Partner",
-              blocker: false,
-            },
-            {
-              id: "dns",
-              name: "DNS authorized",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-            {
-              id: "actblue",
-              name: "ActBlue uploaded to email CRM",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-            {
-              id: "ncr_webhook",
-              name: "NGP AB Webhook connected",
-              owner: "Elizabeth",
-              blocker: false,
-            },
-          ],
-        },
-        {
-          id: "payment",
-          label: "Payment",
-          tasks: [
-            {
-              id: "credit_card",
-              name: "Credit Card in SB",
-              owner: "Partner",
-              blocker: false,
-            },
-          ],
-        },
-      ];
-
-      const TAG_PALETTE = [
-        "#E53935",
-        "#D81B60",
-        "#8E24AA",
-        "#3949AB",
-        "#1E88E5",
-        "#00897B",
-        "#43A047",
-        "#F4511E",
-        "#F6BF26",
-        "#616161",
-      ];
-
-      const DEFAULT_STATE = {
-        tags: [],
-        template: [],
-        neil: {
-          clients: [
-            {
-              name: "Patrick Carroll",
-              start: "May 18",
-              color: NEIL_COLORS[0],
-              checked: [
-                "contract",
-                "monday_move",
-                "capacity",
-                "dns",
-                "ab_access",
-                "ab_webhook",
-                "ncr_webhook",
-                "google_group",
-                "preset_abx",
-                "onboard_meet",
-                "gcal",
-                "sb_req",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Florida Future Leaders PAC",
-              start: "May 19",
-              color: NEIL_COLORS[1],
-              checked: [
-                "contract",
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "onboard_meet",
-                "bio_call",
-                "credit_card",
-                "dns",
-                "crm_email",
-                "preset_abx",
-                "sb_req",
-                "google_group",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Mitchelle Drulis",
-              start: "May 20",
-              color: NEIL_COLORS[2],
-              checked: [
-                "contract",
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "monday_sched",
-                "google_group",
-                "ab_access",
-                "sb_req",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "August Mangeney",
-              start: "May 21",
-              color: NEIL_COLORS[3],
-              checked: [
-                "contract",
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "onboard_meet",
-                "ab_access",
-                "sb_req",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Harry Bronson",
-              start: "May 22",
-              color: NEIL_COLORS[4],
-              checked: ["contract", "capacity"],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Jim Haddock",
-              start: "May 23",
-              color: NEIL_COLORS[5],
-              checked: [],
-              tags: [],
-              archived: false,
-            },
-          ],
-        },
-        jacob: {
-          clients: [
-            {
-              name: "Boyko",
-              start: "",
-              color: JACOB_COLORS[0],
-              checked: [
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "monday_sched",
-                "draft_perms",
-                "google_group",
-                "gcal",
-                "ab_access",
-                "preset_abx",
-                "sb_req",
-                "toll_free",
-                "campaign_verify",
-                "token",
-                "switchboard",
-                "actblue",
-                "add_list",
-                "crm_email",
-                "dns",
-                "bio_call",
-                "misc_lists",
-                "phone_rolo",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "MDP",
-              start: "",
-              color: JACOB_COLORS[1],
-              checked: [
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "monday_sched",
-                "draft_perms",
-                "google_group",
-                "ab_access",
-                "preset_abx",
-                "sb_req",
-                "toll_free",
-                "campaign_verify",
-                "token",
-                "switchboard",
-                "actblue",
-                "add_list",
-                "crm_email",
-                "dns",
-                "bio_call",
-                "misc_lists",
-                "phone_rolo",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "McMillan",
-              start: "",
-              color: JACOB_COLORS[2],
-              checked: [
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "monday_sched",
-                "draft_perms",
-                "ab_access",
-              ],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Holmes",
-              start: "",
-              color: JACOB_COLORS[3],
-              checked: ["capacity", "text_exp", "ab_access"],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Pittman",
-              start: "",
-              color: JACOB_COLORS[4],
-              checked: [],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Vitale",
-              start: "",
-              color: JACOB_COLORS[5],
-              checked: [],
-              tags: [],
-              archived: false,
-            },
-            {
-              name: "Blanks",
-              start: "",
-              color: JACOB_COLORS[6],
-              checked: [
-                "monday_move",
-                "capacity",
-                "text_exp",
-                "monday_sched",
-                "draft_perms",
-                "add_list",
-              ],
-              tags: [],
-              archived: false,
-            },
-          ],
-        },
-        phases: JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-        driveLinks: {},
-      };
-
-      function migrateState(p) {
-        try {
-          [...p.neil.clients, ...p.jacob.clients].forEach((c) => {
-            if (!c.tags) c.tags = [];
-            if (c.archived === undefined) c.archived = false;
-          });
-          if (!p.tags) p.tags = [];
-          if (!p.template) p.template = [];
-          if (!p.driveLinks) p.driveLinks = {};
-          const order = DEFAULT_PHASES.map((ph) => ph.id);
-          p.phases.sort((a, b) => {
-            const ai = order.indexOf(a.id),
-              bi = order.indexOf(b.id);
-            if (ai === -1 && bi === -1) return 0;
-            if (ai === -1) return 1;
-            if (bi === -1) return -1;
-            return ai - bi;
-          });
-        } catch (e) {}
-        return p;
-      }
-      function loadFromLocalStorage() {
-        try {
-          const s = localStorage.getItem("onboarding_v7");
-          if (s) {
-            const p = JSON.parse(s);
-            return migrateState(p);
-          }
-        } catch (e) {}
-        return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      // State Management
+      let appState = {
+        clients: [],
+        phases: {},
+        tasks: {},
+        currentClientId: null,
+        subscriptions: []
       }
 
-      let _saveTimer = null;
-      let _lastSyncedAt = null;
-      let _isSyncing = false;
-      let _syncStatusTimer = null;
-
-      function setSyncStatus(state, text) {
-        const el = document.getElementById("sync-status");
-        if (!el) return;
-        el.className = state;
-        el.innerHTML = state ? `<span class="sync-dot"></span>${text}` : "";
-        if (_syncStatusTimer) clearTimeout(_syncStatusTimer);
-        if (state && state !== "saving") {
-          _syncStatusTimer = setTimeout(() => {
-            el.className = "";
-            el.innerHTML = "";
-          }, 5000);
+      // Sync Status Helper
+      function setSyncStatus(status) {
+        const syncStatus = document.getElementById('sync-status')
+        const syncText = document.getElementById('sync-text')
+        syncStatus.classList.remove('saving', 'saved', 'updated')
+        if (status === 'saving') {
+          syncStatus.classList.add('saving')
+          syncText.textContent = 'Saving...'
+        } else if (status === 'saved') {
+          syncStatus.classList.add('saved')
+          syncText.textContent = 'Saved'
+          setTimeout(() => { 
+            syncStatus.classList.remove('saved')
+            syncText.textContent = 'Ready'
+          }, 2000)
         }
       }
 
-      function save() {
-        setSyncStatus("saving", "Saving…");
-        if (_saveTimer) clearTimeout(_saveTimer);
-        _saveTimer = setTimeout(() => {
-          const snapshot = JSON.stringify(ST);
-          fetch("/api/state", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              key: "onboarding_v7",
-              value: JSON.parse(snapshot),
-            }),
+      // Fetch Data from Supabase
+      async function loadClients() {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('clients')
+            .select('*')
+            .eq('archived', false)
+            .order('created_at', { ascending: false })
+          
+          if (error) throw error
+          appState.clients = data || []
+          renderUI()
+          setSyncStatus('saved')
+        } catch (err) {
+          console.error('Error loading clients:', err)
+        }
+      }
+
+      async function loadPhases(clientId) {
+        try {
+          const { data, error } = await supabase
+            .from('phases')
+            .select('*')
+            .eq('client_id', clientId)
+            .order('display_order', { ascending: true })
+          
+          if (error) throw error
+          appState.phases[clientId] = data || []
+          renderUI()
+        } catch (err) {
+          console.error('Error loading phases:', err)
+        }
+      }
+
+      async function loadTasks(phaseId) {
+        try {
+          const { data, error } = await supabase
+            .from('tasks')
+            .select('*')
+            .eq('phase_id', phaseId)
+            .order('display_order', { ascending: true })
+          
+          if (error) throw error
+          appState.tasks[phaseId] = data || []
+          renderUI()
+        } catch (err) {
+          console.error('Error loading tasks:', err)
+        }
+      }
+
+      // Create Functions
+      async function addClient(name) {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('clients')
+            .insert([{ name, start_date: new Date().toISOString() }])
+            .select()
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadClients()
+        } catch (err) {
+          console.error('Error adding client:', err)
+        }
+      }
+
+      async function addPhase(clientId, name) {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('phases')
+            .insert([{ client_id: clientId, name }])
+            .select()
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadPhases(clientId)
+        } catch (err) {
+          console.error('Error adding phase:', err)
+        }
+      }
+
+      async function addTask(phaseId, name) {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('tasks')
+            .insert([{ phase_id: phaseId, name, completed: false }])
+            .select()
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error adding task:', err)
+        }
+      }
+
+      // Update Functions
+      async function toggleTask(taskId, phaseId) {
+        const task = appState.tasks[phaseId]?.find(t => t.id === taskId)
+        if (!task) return
+
+        setSyncStatus('saving')
+        try {
+          const { error } = await supabase
+            .from('tasks')
+            .update({ completed: !task.completed })
+            .eq('id', taskId)
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error toggling task:', err)
+        }
+      }
+
+      // Delete Functions
+      async function deleteTask(taskId, phaseId) {
+        if (!confirm('Delete this task?')) return
+        try {
+          const { error } = await supabase
+            .from('tasks')
+            .delete()
+            .eq('id', taskId)
+          
+          if (error) throw error
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error deleting task:', err)
+        }
+      }
+
+      // UI Rendering
+      function renderUI() {
+        const main = document.getElementById('main')
+        
+        if (!appState.currentClientId) {
+          // Show client list
+          main.innerHTML = `
+            <div class="dash-section-hd">
+              <h2>Clients</h2>
+              <div class="divider"></div>
+            </div>
+            <div class="dash-grid" id="client-grid"></div>
+          `
+          
+          const grid = document.getElementById('client-grid')
+          appState.clients.forEach(client => {
+            const card = document.createElement('div')
+            card.className = 'client-card'
+            card.innerHTML = `
+              <div class="cc-name">${client.name}</div>
+              <div class="cc-date">${new Date(client.created_at).toLocaleDateString()}</div>
+            `
+            card.onclick = () => {
+              appState.currentClientId = client.id
+              loadPhases(client.id)
+            }
+            grid.appendChild(card)
           })
-            .then((r) => r.json())
-            .then((d) => {
-              if (d.ok) {
-                _lastSyncedAt = new Date().toISOString();
-                setSyncStatus("saved", "Saved");
-              }
-            })
-            .catch((e) => {
-              console.error("Save failed:", e);
-              setSyncStatus("", "");
-            });
-        }, 300);
-      }
-
-      async function syncFromServer(force) {
-        if (_isSyncing) return;
-        _isSyncing = true;
-        try {
-          if (!force) {
-            const poll = await fetch("/api/poll").then((r) => r.json());
-            if (
-              _lastSyncedAt &&
-              new Date(poll.lastUpdated) <= new Date(_lastSyncedAt)
-            ) {
-              _isSyncing = false;
-              return;
-            }
-          }
-          const anyInputFocused =
-            document.activeElement &&
-            (document.activeElement.tagName === "INPUT" ||
-              document.activeElement.tagName === "TEXTAREA");
-          if (anyInputFocused && !force) {
-            _isSyncing = false;
-            return;
-          }
-          const resp = await fetch("/api/state");
-          const { data, lastUpdated } = await resp.json();
-          if (data.onboarding_v7) {
-            const wasMyEdit =
-              _lastSyncedAt &&
-              Math.abs(new Date(lastUpdated) - new Date(_lastSyncedAt)) < 2000;
-            ST = migrateState(data.onboarding_v7);
-            _lastSyncedAt = lastUpdated;
-            render();
-            if (!wasMyEdit) setSyncStatus("updated", "Updated by teammate");
-          }
-        } catch (e) {
-          console.error("Sync failed:", e);
-        }
-        _isSyncing = false;
-      }
-
-      function startPolling() {
-        setInterval(() => syncFromServer(false), 5000);
-      }
-
-      async function initApp() {
-        try {
-          const resp = await fetch("/api/state");
-          const { data, lastUpdated } = await resp.json();
-          if (data.onboarding_v7) {
-            ST = migrateState(data.onboarding_v7);
-            _lastSyncedAt = lastUpdated;
-          } else {
-            ST = loadFromLocalStorage();
-            const allClients = [...ST.neil.clients, ...ST.jacob.clients];
-            allClients.forEach((c) => {
-              const lnk = localStorage.getItem("drivelink_" + c.name);
-              if (lnk) ST.driveLinks[c.name] = lnk;
-            });
-            save();
-          }
-        } catch (e) {
-          console.warn(
-            "Could not reach server, using localStorage fallback:",
-            e,
-          );
-          ST = loadFromLocalStorage();
-        }
-        ST.phases.forEach((p) => (openPhases[p.id] = true));
-        render();
-        startPolling();
-      }
-
-      let ST = JSON.parse(JSON.stringify(DEFAULT_STATE));
-      let partner = "neil";
-      let view = "dashboard";
-      let activeCI = 0;
-      let filter = "all";
-      let openPhases = {};
-      let dragSrc = null,
-        reassignTask = null;
-      let activeTagFilters = new Set();
-      let openDropdownClient = null;
-      let showArchive = false;
-
-      function getTag(id) {
-        return ST.tags.find((t) => t.id === id);
-      }
-      function tagColor(id) {
-        const t = getTag(id);
-        return t ? t.color : "#999";
-      }
-      function tagName(id) {
-        const t = getTag(id);
-        return t ? t.name : id;
-      }
-      function createTag(name) {
-        const color = TAG_PALETTE[ST.tags.length % TAG_PALETTE.length];
-        const id = "tag_" + Date.now();
-        ST.tags.push({ id, name, color });
-        save();
-        return id;
-      }
-      function toggleClientTag(ci, tagId) {
-        const c = clients()[ci];
-        if (!c.tags) c.tags = [];
-        const i = c.tags.indexOf(tagId);
-        if (i >= 0) c.tags.splice(i, 1);
-        else c.tags.push(tagId);
-        save();
-      }
-      function archivedClients() {
-        return clients().filter((c) => c.archived);
-      }
-      function activeClients() {
-        return clients().filter((c) => !c.archived);
-      }
-      function archiveClient(ci) {
-        clients()[ci].archived = true;
-        save();
-      }
-      function unarchiveClient(ci) {
-        clients()[ci].archived = false;
-        save();
-      }
-      function updateStartDate(ci, val) {
-        clients()[ci].start = val.trim();
-        save();
-      }
-      function allTagsForPartner() {
-        const ids = new Set(activeClients().flatMap((c) => c.tags || []));
-        return ST.tags.filter((t) => ids.has(t.id));
-      }
-
-      function driveSearchUrl(name) {
-        return (
-          "https://drive.google.com/drive/search?q=" + encodeURIComponent(name)
-        );
-      }
-      function getSavedLink(name) {
-        return (ST.driveLinks && ST.driveLinks[name]) || "";
-      }
-      function saveLink(name, url) {
-        if (!ST.driveLinks) ST.driveLinks = {};
-        if (url) ST.driveLinks[name] = url;
-        else delete ST.driveLinks[name];
-        save();
-      }
-      function getLink(name) {
-        return getSavedLink(name) || driveSearchUrl(name);
-      }
-      function isCustomLink(name) {
-        return !!getSavedLink(name);
-      }
-      function parseStart(startStr) {
-        if (!startStr) return null;
-        const months = {
-          Jan: 0,
-          Feb: 1,
-          Mar: 2,
-          Apr: 3,
-          May: 4,
-          Jun: 5,
-          Jul: 6,
-          Aug: 7,
-          Sep: 8,
-          Oct: 9,
-          Nov: 10,
-          Dec: 11,
-        };
-        const m = startStr.match(/([A-Za-z]+)\s+(\d+)/);
-        if (!m) return null;
-        const now = new Date();
-        const d = new Date(now.getFullYear(), months[m[1]], +m[2]);
-        return d;
-      }
-      function daysUntil(startStr) {
-        const d = parseStart(startStr);
-        if (!d) return null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return Math.round((d - today) / (1000 * 60 * 60 * 24));
-      }
-      function startWarningInfo(startStr) {
-        const days = daysUntil(startStr);
-        if (days === null || days < 0 || days > 5) return null;
-        if (days === 0) return { label: "Today", cls: "soon-today" };
-        if (days === 1) return { label: "Tomorrow", cls: "soon-tomorrow" };
-        return { label: `In ${days} days`, cls: "soon-days" };
-      }
-      function startedOrStarts(startStr) {
-        const days = daysUntil(startStr);
-        if (days === null) return "";
-        return days < 0 ? "Started" : "Starts";
-      }
-      function driveSvg(cls) {
-        return `<svg class="${cls}" viewBox="0 0 87.3 78" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>`;
-      }
-      function partnerColor() {
-        return partner === "neil" ? "var(--neil)" : "var(--jacob)";
-      }
-      function clients() {
-        return ST[partner].clients;
-      }
-      function totalTasks() {
-        return ST.phases.reduce((a, p) => a + p.tasks.length, 0);
-      }
-      function doneCount(ci) {
-        return clients()[ci].checked.length;
-      }
-      function pct(ci) {
-        const t = totalTasks();
-        return t ? Math.round((doneCount(ci) / t) * 100) : 0;
-      }
-      function hasChecked(ci, tid) {
-        return clients()[ci].checked.includes(tid);
-      }
-      function toggle(ci, tid) {
-        const c = clients()[ci];
-        const i = c.checked.indexOf(tid);
-        const isChecking = i < 0;
-        if (i >= 0) c.checked.splice(i, 1);
-        else c.checked.push(tid);
-        save();
-        if (isChecking && tid === "onboard_meet") {
-          const payload = JSON.stringify({
-            clientName: c.name,
-            partner,
-            timestamp: new Date().toISOString(),
-          });
-          fetch("/api/zapier/contract", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: payload,
-          }).catch(() => {});
-          fetch("/api/zapier/onboard-meeting", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: payload,
-          }).catch(() => {});
-        }
-      }
-      function pendingBlockers(ci) {
-        return ST.phases.flatMap((p) =>
-          p.tasks.filter((t) => t.blocker && !hasChecked(ci, t.id)),
-        );
-      }
-
-      function setPartner(p) {
-        partner = p;
-        view = "dashboard";
-        activeTagFilters = new Set();
-        document.getElementById("tab-client").style.display = "none";
-        document.getElementById("tab-dash").classList.add("active");
-        document.getElementById("tab-client").classList.remove("active");
-        document.querySelectorAll(".ptab").forEach((b) => {
-          b.classList.toggle("active", b.dataset.p === p);
-        });
-        render();
-      }
-      function setView(v, ci) {
-        view = v;
-        if (ci !== undefined) activeCI = ci;
-        const td = document.getElementById("tab-dash"),
-          tc = document.getElementById("tab-client");
-        td.classList.toggle("active", v === "dashboard");
-        if (v === "client") {
-          tc.style.display = "";
-          tc.textContent = clients()[activeCI].name.split(" ")[0];
-          tc.classList.add("active");
-          td.classList.remove("active");
         } else {
-          tc.style.display = "none";
-          tc.classList.remove("active");
+          // Show client details with phases and tasks
+          const client = appState.clients.find(c => c.id === appState.currentClientId)
+          const phases = appState.phases[appState.currentClientId] || []
+          
+          main.innerHTML = `
+            <div class="dash-section-hd">
+              <h2>${client?.name || 'Client'}</h2>
+              <div class="divider"></div>
+            </div>
+            <div id="phases-container"></div>
+          `
+          
+          const container = document.getElementById('phases-container')
+          phases.forEach(phase => {
+            const tasks = appState.tasks[phase.id] || []
+            const taskHtml = tasks.map(task => `
+              <div class="task-row ${task.completed ? 'done' : ''}" data-task-id="${task.id}">
+                <div class="task-check" onclick="window.toggleTaskUI('${task.id}', '${phase.id}')">
+                  <i class="ti ti-check"></i>
+                </div>
+                <div class="task-body">
+                  <span class="task-name-text">${task.name}</span>
+                </div>
+                <div class="task-actions">
+                  <button class="icon-btn" onclick="window.deleteTaskUI('${task.id}', '${phase.id}')">
+                    <i class="ti ti-trash"></i>
+                  </button>
+                </div>
+              </div>
+            `).join('')
+            
+            const phaseHtml = `
+              <div class="phase-block">
+                <div class="phase-hd">
+                  <span class="phase-name">${phase.name}</span>
+                  <span class="phase-prog">${tasks.filter(t => t.completed).length}/${tasks.length}</span>
+                </div>
+                <div class="task-list">
+                  ${taskHtml || '<div style="padding: 9px 13px; color: var(--text3);">No tasks yet</div>'}
+                </div>
+                <button class="btn-sm" onclick="window.addTaskUI('${phase.id}')" style="margin-top: 8px;">
+                  <i class="ti ti-plus"></i> Task
+                </button>
+              </div>
+            `
+            container.innerHTML += phaseHtml
+          })
+          
+          container.innerHTML += `
+            <button class="btn-sm" onclick="window.addPhaseUI()">
+              <i class="ti ti-plus"></i> Phase
+            </button>
+            <button class="btn-sm back-btn" onclick="window.backToClients()">
+              ← Back
+            </button>
+          `
         }
-        render();
       }
 
-      document
-        .querySelectorAll(".ptab")
-        .forEach((b) =>
-          b.addEventListener("click", () => setPartner(b.dataset.p)),
-        );
-      document
-        .getElementById("tab-dash")
-        .addEventListener("click", () => setView("dashboard"));
-      document
-        .getElementById("tab-client")
-        .addEventListener("click", () => setView("client", activeCI));
-
-      function render() {
-        const m = document.getElementById("main");
-        m.innerHTML = "";
-        view === "dashboard" ? renderDashboard(m) : renderClient(m);
+      // Global Functions for inline onclick
+      window.toggleTaskUI = toggleTask
+      window.deleteTaskUI = deleteTask
+      window.backToClients = () => {
+        appState.currentClientId = null
+        renderUI()
+      }
+      window.addPhaseUI = async () => {
+        const name = prompt('Phase name:')
+        if (name) await addPhase(appState.currentClientId, name)
+      }
+      window.addTaskUI = async (phaseId) => {
+        const name = prompt('Task name:')
+        if (name) await addTask(phaseId, name)
       }
 
-      // ---- DASHBOARD ----
-      function closeAllDropdowns() {
-        openDropdownClient = null;
-        document.querySelectorAll(".tag-dropdown").forEach((d) => d.remove());
+      // Setup Real-Time Subscriptions
+      function setupSubscriptions() {
+        // Subscribe to client changes
+        const clientSub = supabase
+          .channel('clients-changes')
+          .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'clients'
+          }, (payload) => {
+            console.log('Clients updated:', payload)
+            loadClients()
+          })
+          .subscribe()
+        
+        appState.subscriptions.push(clientSub)
       }
 
-      function renderTagDropdown(card, ci) {
-        closeAllDropdowns();
-        openDropdownClient = ci;
-        const c = clients()[ci];
-        const dd = document.createElement("div");
-        dd.className = "tag-dropdown";
-        dd.style.cssText =
-          "position:absolute;left:0;bottom:calc(100% + 4px);z-index:200;width:200px";
-        const assigned = ST.tags.filter((t) => (c.tags || []).includes(t.id));
-        const unassigned = ST.tags.filter(
-          (t) => !(c.tags || []).includes(t.id),
-        );
-        if (assigned.length) {
-          const lbl = document.createElement("div");
-          lbl.style.cssText =
-            "font-size:10px;color:var(--text3);padding:4px 8px;text-transform:uppercase;letter-spacing:.06em";
-          lbl.textContent = "Assigned";
-          dd.appendChild(lbl);
-          assigned.forEach((t) => {
-            const item = document.createElement("div");
-            item.className = "tag-dropdown-item";
-            item.innerHTML = `<span class="tag-color-dot" style="background:${t.color}"></span><span style="flex:1">${t.name}</span><span style="font-size:11px;color:var(--text3)">✓</span>`;
-            item.addEventListener("click", (e) => {
-              e.stopPropagation();
-              toggleClientTag(ci, t.id);
-              renderTagDropdown(card, ci);
-              render();
-            });
-            dd.appendChild(item);
-          });
-        }
-        if (unassigned.length) {
-          const lbl = document.createElement("div");
-          lbl.style.cssText =
-            "font-size:10px;color:var(--text3);padding:4px 8px;text-transform:uppercase;letter-spacing:.06em;margin-top:2px";
-          lbl.textContent = "Add tag";
-          dd.appendChild(lbl);
-          unassigned.forEach((t) => {
-            const item = document.createElement("div");
-            item.className = "tag-dropdown-item";
-            item.innerHTML = `<span class="tag-color-dot" style="background:${t.color}"></span><span>${t.name}</span>`;
-            item.addEventListener("click", (e) => {
-              e.stopPropagation();
-              toggleClientTag(ci, t.id);
-              renderTagDropdown(card, ci);
-              render();
-            });
-            dd.appendChild(item);
-          });
-        }
-        const newRow = document.createElement("div");
-        newRow.className = "tag-dropdown-new";
-        newRow.innerHTML = `<i class="ti ti-plus" style="font-size:13px;color:var(--text3)" aria-hidden="true"></i><input class="tag-dropdown-input" placeholder="Create new tag…" />`;
-        const inp = newRow.querySelector("input");
-        inp.addEventListener("keydown", (e) => {
-          e.stopPropagation();
-          if (e.key === "Enter" && inp.value.trim()) {
-            const id = createTag(inp.value.trim());
-            toggleClientTag(ci, id);
-            renderTagDropdown(card, ci);
-            render();
-          }
-        });
-        inp.addEventListener("click", (e) => e.stopPropagation());
-        dd.appendChild(newRow);
-        card.style.position = "relative";
-        card.appendChild(dd);
-        setTimeout(() => inp.focus(), 50);
-        setTimeout(
-          () =>
-            document.addEventListener("click", closeAllDropdowns, {
-              once: true,
-            }),
-          10,
-        );
+      // Add Button Handler
+      document.querySelector('.nav-add').onclick = async () => {
+        const name = prompt('New client name:')
+        if (name) await addClient(name)
       }
 
-      function renderDashboard(m) {
-        closeAllDropdowns();
-        const pname = partner === "neil" ? "Neil" : "Jacob";
-        const badge = `<span class="partner-badge badge-${partner}">${pname}</span>`;
-        const partnerTags = allTagsForPartner();
-
-        const upcoming = clients()
-          .map((c, ci) => ({ c, ci, warn: startWarningInfo(c.start) }))
-          .filter((x) => x.warn && !x.c.archived);
-        if (upcoming.length) {
-          const wb = document.createElement("div");
-          wb.className = "start-warning-banner";
-          wb.innerHTML = `<i class="ti ti-clock-exclamation" style="font-size:18px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i><div><strong>${upcoming.length} client${upcoming.length > 1 ? "s" : ""} starting soon</strong><ul>${upcoming.map(({ c, warn }) => `<li><span class="soon-badge ${warn.cls}">${warn.label}</span>${c.name}</li>`).join("")}</ul></div>`;
-          wb.querySelectorAll("li").forEach((li, i) => {
-            li.style.cursor = "pointer";
-            li.addEventListener("click", () =>
-              setView("client", upcoming[i].ci),
-            );
-          });
-          m.appendChild(wb);
-        }
-
-        if (partnerTags.length) {
-          const tfb = document.createElement("div");
-          tfb.className = "tag-filter-bar";
-          tfb.innerHTML = `<span class="tag-filter-label">Filter by tag</span>`;
-          partnerTags.forEach((t) => {
-            const btn = document.createElement("button");
-            btn.className =
-              "tag-filter-btn" + (activeTagFilters.has(t.id) ? " active" : "");
-            if (activeTagFilters.has(t.id))
-              btn.style.cssText = `background:${t.color};color:#fff;border-color:${t.color}`;
-            btn.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${t.color};margin-right:4px;vertical-align:1px"></span>${t.name}`;
-            btn.addEventListener("click", () => {
-              if (activeTagFilters.has(t.id)) activeTagFilters.delete(t.id);
-              else activeTagFilters.add(t.id);
-              const mm = document.getElementById("main");
-              mm.innerHTML = "";
-              renderDashboard(mm);
-            });
-            tfb.appendChild(btn);
-          });
-          if (activeTagFilters.size) {
-            const clr = document.createElement("button");
-            clr.className = "tag-filter-btn clear-tags";
-            clr.textContent = "✕ Clear filters";
-            clr.addEventListener("click", () => {
-              activeTagFilters = new Set();
-              const mm = document.getElementById("main");
-              mm.innerHTML = "";
-              renderDashboard(mm);
-            });
-            tfb.appendChild(clr);
-          }
-          m.appendChild(tfb);
-        }
-
-        let h = document.createElement("div");
-        h.className = "dash-section-hd";
-        h.innerHTML = `<h2>Clients ${badge}</h2><div class="divider"></div>`;
-        m.appendChild(h);
-
-        const grid = document.createElement("div");
-        grid.className = "dash-grid";
-        let visibleClients = clients()
-          .map((c, ci) => ({ c, ci }))
-          .filter(({ c }) => !c.archived);
-        if (activeTagFilters.size) {
-          visibleClients = visibleClients.filter(({ c }) =>
-            [...activeTagFilters].every((tid) => (c.tags || []).includes(tid)),
-          );
-        }
-        if (!visibleClients.length) {
-          const empty = document.createElement("div");
-          empty.style.cssText =
-            "color:var(--text3);font-size:13px;padding:1rem 0;grid-column:1/-1";
-          empty.textContent = "No clients match the selected tags.";
-          grid.appendChild(empty);
-        }
-
-        visibleClients.forEach(({ c, ci }) => {
-          const p = pct(ci),
-            blk = pendingBlockers(ci),
-            custom = isCustomLink(c.name);
-          const card = document.createElement("div");
-          card.className = "client-card";
-          const tagHtml = (c.tags || [])
-            .filter((id) => getTag(id))
-            .map(
-              (id) =>
-                `<span class="ctag" style="background:${tagColor(id)}22;color:${tagColor(id)};border-color:${tagColor(id)}55" data-tagid="${id}">${tagName(id)}<span class="ctag-remove" data-remove="${id}">✕</span></span>`,
-            )
-            .join("");
-          const warn = startWarningInfo(c.start);
-          const dateHtml = c.start
-            ? warn
-              ? `<div class="cc-date-warn"><span class="soon-badge ${warn.cls}">${warn.label}</span><span style="color:var(--text3)">Starts ${c.start}</span></div>`
-              : `<div class="cc-date">${startedOrStarts(c.start)} ${c.start}</div>`
-            : `<div class="cc-date">&nbsp;</div>`;
-          card.innerHTML = `<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px"><div class="cc-name" style="flex:1">${c.name}</div><a class="drive-btn" href="${getLink(c.name)}" target="_blank" rel="noopener" title="${custom ? "Direct folder link" : "Search Drive for " + c.name}">${driveSvg("drive-svg")} ${custom ? "Folder" : "Drive"}</a></div>${dateHtml}<div class="cc-bar-bg"><div class="cc-bar-fill" style="width:${p}%;background:${c.color}"></div></div><div style="display:flex;align-items:center;justify-content:space-between"><span class="cc-pct" style="color:${c.color}">${p}%</span><span class="cc-meta">${doneCount(ci)}/${totalTasks()} tasks</span></div>${blk.length ? `<div class="cc-meta" style="margin-top:5px"><span class="blocker-dot"></span>${blk.length} blocker${blk.length > 1 ? "s" : ""} pending</div>` : '<div class="cc-meta" style="margin-top:5px;color:var(--green-text)"><i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i> No blockers</div>'}<div class="client-tags">${tagHtml}<button class="ctag-add" data-ci="${ci}"><i class="ti ti-tag" style="font-size:10px" aria-hidden="true"></i> Tag</button></div><div class="drive-link-row">${custom ? `<span class="drive-link-saved"><i class="ti ti-link" style="font-size:10px"></i> Folder linked</span><button class="drive-clear-btn" data-client="${c.name}" title="Remove custom link">✕</button>` : `<i class="ti ti-link" style="font-size:11px;color:var(--text3);flex-shrink:0" aria-hidden="true"></i><input class="drive-link-input" placeholder="Paste Drive folder URL to save…" data-client="${c.name}" />`}</div>`;
-          card.addEventListener("click", (e) => {
-            if (
-              e.target.closest(".drive-btn") ||
-              e.target.closest(".drive-link-input") ||
-              e.target.closest(".drive-clear-btn") ||
-              e.target.closest(".ctag-add") ||
-              e.target.closest(".ctag-remove") ||
-              e.target.closest(".tag-dropdown")
-            )
-              return;
-            setView("client", ci);
-          });
-          card.querySelector(".ctag-add").addEventListener("click", (e) => {
-            e.stopPropagation();
-            renderTagDropdown(card, ci);
-          });
-          card.querySelectorAll(".ctag-remove").forEach((btn) =>
-            btn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              toggleClientTag(ci, btn.dataset.remove);
-              const mm = document.getElementById("main");
-              mm.innerHTML = "";
-              renderDashboard(mm);
-            }),
-          );
-          const inp = card.querySelector(".drive-link-input");
-          if (inp) {
-            inp.addEventListener("paste", (e) => {
-              setTimeout(() => {
-                const v = inp.value.trim();
-                if (v.startsWith("http")) {
-                  saveLink(c.name, v);
-                  const mm = document.getElementById("main");
-                  mm.innerHTML = "";
-                  renderDashboard(mm);
-                }
-              }, 0);
-            });
-            inp.addEventListener("keydown", (e) => {
-              if (e.key === "Enter") {
-                const v = inp.value.trim();
-                if (v.startsWith("http")) {
-                  saveLink(c.name, v);
-                  const mm = document.getElementById("main");
-                  mm.innerHTML = "";
-                  renderDashboard(mm);
-                }
-              }
-            });
-          }
-          const clrBtn = card.querySelector(".drive-clear-btn");
-          if (clrBtn) {
-            clrBtn.addEventListener("click", (e) => {
-              e.stopPropagation();
-              saveLink(clrBtn.dataset.client, "");
-              const mm = document.getElementById("main");
-              mm.innerHTML = "";
-              renderDashboard(mm);
-            });
-          }
-          grid.appendChild(card);
-        });
-        m.appendChild(grid);
-
-        // Archive section
-        const archived = clients()
-          .map((c, ci) => ({ c, ci }))
-          .filter(({ c }) => c.archived);
-        if (archived.length) {
-          const ab = document.createElement("div");
-          ab.className = "archive-banner";
-          ab.innerHTML = `<i class="ti ti-archive" aria-hidden="true"></i><span>${archived.length} archived client${archived.length > 1 ? "s" : ""}</span><i class="ti ti-chevron-${showArchive ? "up" : "down"}" style="margin-left:auto" aria-hidden="true"></i>`;
-          ab.addEventListener("click", () => {
-            showArchive = !showArchive;
-            const mm = document.getElementById("main");
-            mm.innerHTML = "";
-            renderDashboard(mm);
-          });
-          m.appendChild(ab);
-          if (showArchive) {
-            const ag = document.createElement("div");
-            ag.className = "archive-grid";
-            archived.forEach(({ c, ci }) => {
-              const p = pct(ci);
-              const card = document.createElement("div");
-              card.className = "archive-card";
-              card.innerHTML = `<div class="cc-name">${c.name}</div><div class="cc-date">${c.start || "No start date"}</div><div class="cc-bar-bg"><div class="cc-bar-fill" style="width:${p}%;background:${c.color}"></div></div><div style="font-size:12px;color:var(--text2);margin-top:4px">${doneCount(ci)}/${totalTasks()} tasks completed</div><button class="unarchive-btn">↩ Restore client</button>`;
-              card
-                .querySelector(".unarchive-btn")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  unarchiveClient(ci);
-                  const mm = document.getElementById("main");
-                  mm.innerHTML = "";
-                  renderDashboard(mm);
-                });
-              ag.appendChild(card);
-            });
-            m.appendChild(ag);
-          }
-        }
-
-        h = document.createElement("div");
-        h.className = "dash-section-hd";
-        h.innerHTML = `<h2>Progress by phase ${badge}</h2><div class="divider"></div>`;
-        m.appendChild(h);
-        const pg = document.createElement("div");
-        pg.className = "phase-overview-grid";
-        const filteredClients = visibleClients.map(({ c }) => c);
-        ST.phases.forEach((phase) => {
-          const base = filteredClients.length || clients().length;
-          const total = phase.tasks.length * base;
-          const done = filteredClients.reduce(
-            (s, c) =>
-              s + phase.tasks.filter((t) => c.checked.includes(t.id)).length,
-            0,
-          );
-          const p = total ? Math.round((done / total) * 100) : 0;
-          const card = document.createElement("div");
-          card.className = "phase-card";
-          card.innerHTML = `<div class="phase-card-name">${phase.label}</div><div class="phase-card-sub">${phase.tasks.length} tasks</div><div class="cc-bar-bg"><div class="cc-bar-fill" style="width:${p}%;background:${partnerColor()}"></div></div><div style="font-size:11px;color:var(--text2);margin-top:4px">${done}/${total} completed</div>`;
-          pg.appendChild(card);
-        });
-        m.appendChild(pg);
+      // Initialize App
+      async function init() {
+        setSyncStatus('saving')
+        await loadClients()
+        setupSubscriptions()
+        setSyncStatus('saved')
       }
 
-      // ---- CLIENT VIEW ----
-      function renderClient(m) {
-        const c = clients()[activeCI],
-          blk = pendingBlockers(activeCI),
-          p = pct(activeCI);
-        const hdr = document.createElement("div");
-        hdr.style.cssText =
-          "display:flex;align-items:center;gap:10px;margin-bottom:1rem";
-        hdr.innerHTML = `<span style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></span><h1 style="font-size:20px;font-weight:600;margin:0">${c.name}</h1><span class="partner-badge badge-${partner}">${partner === "neil" ? "Neil" : "Jacob"}</span>`;
-        m.appendChild(hdr);
-
-        const sr = document.createElement("div");
-        sr.className = "stat-row";
-        const customLink = isCustomLink(c.name);
-        const clientWarn = startWarningInfo(c.start);
-        const clientDateStr = c.start
-          ? clientWarn
-            ? `<span class="soon-badge ${clientWarn.cls}" style="font-size:12px">${clientWarn.label}</span> Starts ${c.start}`
-            : `${startedOrStarts(c.start)} ${c.start}`
-          : "No start date";
-        const clientTagHtml =
-          (c.tags || [])
-            .filter((id) => getTag(id))
-            .map(
-              (id) =>
-                `<span class="ctag" style="background:${tagColor(id)}22;color:${tagColor(id)};border-color:${tagColor(id)}55">${tagName(id)}</span>`,
-            )
-            .join("") ||
-          `<span style="font-size:11px;color:var(--text3)">No tags</span>`;
-        sr.innerHTML = `<div class="stat"><div class="stat-lbl">Complete</div><div class="stat-val">${p}%</div><div class="stat-bar"><div class="stat-fill" style="width:${p}%;background:${c.color}"></div></div></div><div class="stat"><div class="stat-lbl">Tasks done</div><div class="stat-val">${doneCount(activeCI)} / ${totalTasks()}</div></div><div class="stat"><div class="stat-lbl">Start date <button class="edit-date-btn" id="edit-date-btn" title="Edit start date"><i class="ti ti-pencil" aria-hidden="true"></i></button></div><div style="font-size:13px;margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap" id="date-display">${clientDateStr}</div></div><div class="stat"><div class="stat-lbl">Tags</div><div class="client-tags" style="margin-top:5px">${clientTagHtml}</div></div><div class="stat"><div class="stat-lbl">Blockers pending</div><div class="stat-val" style="color:${blk.length ? "var(--red)" : "var(--green)"}">${blk.length}</div></div><div class="stat" style="display:flex;flex-direction:column;justify-content:center"><div class="stat-lbl">Google Drive ${customLink ? '<span style="color:var(--green-text);font-size:10px">● linked</span>' : '<span style="color:var(--text3);font-size:10px">● search</span>'}</div><a class="drive-btn-lg" href="${getLink(c.name)}" target="_blank" rel="noopener" style="margin-top:4px" title="${customLink ? "Direct folder" : "Search Drive for " + c.name}">${driveSvg("")} ${customLink ? "Open folder" : "Search Drive"}</a>${customLink ? `<button style="font-size:10px;color:var(--text3);background:none;border:none;cursor:pointer;margin-top:4px;text-align:left;font-family:inherit" id="clear-drive-link">Remove custom link</button>` : `<input id="client-drive-input" style="font-size:11px;margin-top:5px;width:100%;background:transparent;border:none;border-bottom:0.5px solid var(--border2);outline:none;color:var(--text2);font-family:inherit;padding:2px 0" placeholder="Paste folder URL to save…" />`}</div>`;
-        m.appendChild(sr);
-
-        const editDateBtn = document.getElementById("edit-date-btn");
-        if (editDateBtn) {
-          editDateBtn.addEventListener("click", () => {
-            const display = document.getElementById("date-display");
-            const inp = document.createElement("input");
-            inp.className = "date-edit-input";
-            inp.value = c.start || "";
-            inp.placeholder = "e.g. Jun 3";
-            display.innerHTML = "";
-            display.appendChild(inp);
-            inp.focus();
-            inp.select();
-            const finish = () => {
-              const v = inp.value.trim();
-              updateStartDate(activeCI, v);
-              render();
-            };
-            inp.addEventListener("blur", finish);
-            inp.addEventListener("keydown", (e) => {
-              if (e.key === "Enter") finish();
-              e.stopPropagation();
-            });
-          });
-        }
-        const cdi = document.getElementById("client-drive-input");
-        if (cdi) {
-          cdi.addEventListener("paste", (e) => {
-            setTimeout(() => {
-              const v = cdi.value.trim();
-              if (v.startsWith("http")) {
-                saveLink(c.name, v);
-                render();
-              }
-            }, 0);
-          });
-          cdi.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-              const v = cdi.value.trim();
-              if (v.startsWith("http")) {
-                saveLink(c.name, v);
-                render();
-              }
-            }
-          });
-        }
-        const cdl = document.getElementById("clear-drive-link");
-        if (cdl) {
-          cdl.addEventListener("click", () => {
-            saveLink(c.name, "");
-            render();
-          });
-        }
-
-        if (blk.length) {
-          const b = document.createElement("div");
-          b.className = "blocker-banner show";
-          b.innerHTML = `<i class="ti ti-alert-triangle" aria-hidden="true"></i> ${blk.length} blocker${blk.length > 1 ? "s" : ""} pending: ${blk.map((t) => t.name).join(", ")}`;
-          m.appendChild(b);
-        }
-
-        const fr = document.createElement("div");
-        fr.className = "filter-row";
-        const isTemplate =
-          ST.template.length &&
-          ST.template.every((id) => clients()[activeCI].checked.includes(id)) &&
-          clients()[activeCI].checked.every((id) => ST.template.includes(id));
-        fr.innerHTML = `${["all", "pending", "done", "blocker"].map((f) => `<button class="filter-btn${filter === f ? " active" : ""}" data-f="${f}">${f === "blocker" ? "Blockers first" : f.charAt(0).toUpperCase() + f.slice(1)}</button>`).join("")}<button class="btn-sm" id="add-phase-btn" style="margin-left:auto"><i class="ti ti-folder-plus" aria-hidden="true"></i> Add phase</button><button class="btn-sm" id="set-template-btn" title="New clients will start with this client's checked tasks" style="${isTemplate ? "color:var(--green-text);border-color:var(--green)" : "color:var(--text3)"}"><i class="ti ti-copy" aria-hidden="true"></i> ${isTemplate ? "Default template" : "Set as template"}</button><button class="btn-sm" id="reset-btn" style="color:var(--text3)"><i class="ti ti-refresh" aria-hidden="true"></i> Reset</button>`;
-        fr.querySelectorAll(".filter-btn").forEach((btn) =>
-          btn.addEventListener("click", () => {
-            filter = btn.dataset.f;
-            render();
-          }),
-        );
-        m.appendChild(fr);
-        document
-          .getElementById("add-phase-btn")
-          .addEventListener("click", () => {
-            document.getElementById("mp-name").value = "";
-            openModal("modal-phase");
-            setTimeout(() => document.getElementById("mp-name").focus(), 50);
-          });
-        document
-          .getElementById("set-template-btn")
-          .addEventListener("click", () => {
-            ST.template = clients()[activeCI].checked.slice();
-            save();
-            render();
-          });
-        document.getElementById("reset-btn").addEventListener("click", () => {
-          if (confirm(`Reset all progress for ${c.name}?`)) {
-            clients()[activeCI].checked = [];
-            save();
-            render();
-          }
-        });
-
-        ST.phases.forEach((phase, pi) => {
-          let tasks = [...phase.tasks];
-          if (filter === "pending")
-            tasks = tasks.filter((t) => !hasChecked(activeCI, t.id));
-          if (filter === "done")
-            tasks = tasks.filter((t) => hasChecked(activeCI, t.id));
-          if (filter === "blocker")
-            tasks = [
-              ...tasks.filter((t) => t.blocker && !hasChecked(activeCI, t.id)),
-              ...tasks.filter((t) => !t.blocker || hasChecked(activeCI, t.id)),
-            ];
-          const open = openPhases[phase.id];
-          const phaseDone = phase.tasks.filter((t) =>
-            hasChecked(activeCI, t.id),
-          ).length;
-          const block = document.createElement("div");
-          block.className = "phase-block";
-          const hd = document.createElement("div");
-          hd.className = "phase-hd";
-          hd.innerHTML = `<i class="ti ti-chevron-right phase-chevron${open ? " open" : ""}" aria-hidden="true"></i><input class="phase-name-edit" value="${phase.label}" /><span class="phase-prog">${phaseDone}/${phase.tasks.length}</span><button class="icon-btn del" style="opacity:.4;flex-shrink:0" title="Delete phase"><i class="ti ti-trash" aria-hidden="true"></i></button>`;
-          hd.querySelector(".phase-chevron").addEventListener("click", () => {
-            openPhases[phase.id] = !openPhases[phase.id];
-            render();
-          });
-          const ni = hd.querySelector(".phase-name-edit");
-          ni.addEventListener("change", () => {
-            phase.label = ni.value;
-            save();
-          });
-          ni.addEventListener("click", (e) => e.stopPropagation());
-          hd.querySelector(".icon-btn").addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (confirm(`Delete phase "${phase.label}"?`)) {
-              ST.phases.splice(pi, 1);
-              save();
-              render();
-            }
-          });
-          block.appendChild(hd);
-          if (open) {
-            const list = document.createElement("div");
-            list.className = "task-list";
-            tasks.forEach((task) => {
-              const done = hasChecked(activeCI, task.id);
-              const row = document.createElement("div");
-              row.className = `task-row${done ? " done" : ""}`;
-              row.draggable = true;
-              row.innerHTML = `<i class="ti ti-grip-vertical drag-handle" aria-hidden="true"></i><div class="task-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="task-body"><span class="task-name-text">${task.name}</span>${task.blocker ? '<span class="tag tag-blocker"><i class="ti ti-alert-circle" aria-hidden="true"></i> blocker</span>' : ""}<span class="owner-badge">${task.owner}</span></div><div class="task-actions"><button class="icon-btn" title="Edit task name" data-action="edit"><i class="ti ti-pencil" aria-hidden="true"></i></button><button class="icon-btn" title="Move to another phase" data-action="reassign"><i class="ti ti-arrows-move" aria-hidden="true"></i></button><button class="icon-btn${task.blocker ? " is-red" : ""}" title="${task.blocker ? "Remove blocker" : "Mark as blocker"}" data-action="blocker"><i class="ti ti-alert-circle" aria-hidden="true"></i></button><button class="icon-btn del" title="Delete task" data-action="del"><i class="ti ti-trash" aria-hidden="true"></i></button></div>`;
-              row
-                .querySelector(".task-check")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  toggle(activeCI, task.id);
-                  render();
-                });
-              function startEditTaskName() {
-                const inp = document.createElement("input");
-                inp.className = "task-name-input";
-                inp.value = task.name;
-                row.querySelector(".task-name-text").replaceWith(inp);
-                inp.focus();
-                inp.select();
-                const fin = () => {
-                  task.name = inp.value.trim() || task.name;
-                  save();
-                  render();
-                };
-                inp.addEventListener("blur", fin);
-                inp.addEventListener("keydown", (e) => {
-                  if (e.key === "Enter") fin();
-                  e.stopPropagation();
-                });
-              }
-              row
-                .querySelector(".task-name-text")
-                .addEventListener("dblclick", startEditTaskName);
-              row
-                .querySelector("[data-action='edit']")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  startEditTaskName();
-                });
-              row
-                .querySelector(".owner-badge")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  const sel = document.createElement("select");
-                  sel.className = "owner-select";
-                  OWNERS.forEach((o) => {
-                    const opt = document.createElement("option");
-                    opt.value = o;
-                    opt.textContent = o;
-                    if (o === task.owner) opt.selected = true;
-                    sel.appendChild(opt);
-                  });
-                  e.target.replaceWith(sel);
-                  sel.focus();
-                  sel.addEventListener("change", () => {
-                    task.owner = sel.value;
-                    save();
-                    render();
-                  });
-                  sel.addEventListener("blur", () => render());
-                });
-              row
-                .querySelector("[data-action='reassign']")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  reassignTask = { phaseId: phase.id, taskId: task.id };
-                  document.getElementById("mr-phase").innerHTML = ST.phases
-                    .filter((p) => p.id !== phase.id)
-                    .map((p) => `<option value="${p.id}">${p.label}</option>`)
-                    .join("");
-                  openModal("modal-reassign");
-                });
-              row
-                .querySelector("[data-action='blocker']")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  task.blocker = !task.blocker;
-                  save();
-                  render();
-                });
-              row
-                .querySelector("[data-action='del']")
-                .addEventListener("click", (e) => {
-                  e.stopPropagation();
-                  if (confirm(`Delete "${task.name}"?`)) {
-                    phase.tasks = phase.tasks.filter((t) => t.id !== task.id);
-                    [...ST.neil.clients, ...ST.jacob.clients].forEach((c) => {
-                      c.checked = c.checked.filter((id) => id !== task.id);
-                    });
-                    save();
-                    render();
-                  }
-                });
-              row.addEventListener("dragstart", (e) => {
-                dragSrc = { phaseId: phase.id, taskId: task.id };
-                e.dataTransfer.effectAllowed = "move";
-                setTimeout(() => (row.style.opacity = "0.4"), 0);
-              });
-              row.addEventListener("dragend", () => (row.style.opacity = ""));
-              row.addEventListener("dragover", (e) => {
-                e.preventDefault();
-                row.classList.add("drag-over");
-              });
-              row.addEventListener("dragleave", () =>
-                row.classList.remove("drag-over"),
-              );
-              row.addEventListener("drop", (e) => {
-                e.preventDefault();
-                row.classList.remove("drag-over");
-                if (!dragSrc || dragSrc.taskId === task.id) return;
-                const sp = ST.phases.find((p) => p.id === dragSrc.phaseId),
-                  tp = ST.phases.find((p) => p.id === phase.id);
-                const si = sp.tasks.findIndex((t) => t.id === dragSrc.taskId),
-                  ti2 = tp.tasks.findIndex((t) => t.id === task.id);
-                const [moved] = sp.tasks.splice(si, 1);
-                tp.tasks.splice(ti2, 0, moved);
-                dragSrc = null;
-                save();
-                render();
-              });
-              list.appendChild(row);
-            });
-            const ar = document.createElement("div");
-            ar.className = "add-task-row";
-            ar.innerHTML = `<i class="ti ti-plus" style="color:var(--text3);font-size:14px" aria-hidden="true"></i><input class="add-task-input" placeholder="Add a task and press Enter…" />`;
-            ar.querySelector("input").addEventListener("keydown", (e) => {
-              if (e.key === "Enter" && e.target.value.trim()) {
-                phase.tasks.push({
-                  id: "t_" + Date.now(),
-                  name: e.target.value.trim(),
-                  owner: "Partner",
-                  blocker: false,
-                });
-                save();
-                render();
-              }
-            });
-            list.appendChild(ar);
-            block.appendChild(list);
-          }
-          m.appendChild(block);
-        });
-
-        // Archive button at bottom of client page
-        const archiveWrap = document.createElement("div");
-        archiveWrap.style.cssText =
-          "margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid var(--border);display:flex;justify-content:flex-end";
-        const archiveBtn = document.createElement("button");
-        archiveBtn.className = "archive-client-btn";
-        archiveBtn.innerHTML = `<i class="ti ti-archive" aria-hidden="true"></i> Archive ${c.name}`;
-        archiveBtn.addEventListener("click", () => {
-          if (
-            confirm(
-              `Archive ${c.name}? You can restore them anytime from the dashboard.`,
-            )
-          ) {
-            archiveClient(activeCI);
-            setView("dashboard");
-          }
-        });
-        archiveWrap.appendChild(archiveBtn);
-        m.appendChild(archiveWrap);
-      }
-
-      function openModal(id) {
-        document.getElementById(id).classList.add("show");
-      }
-      function closeModal(id) {
-        document.getElementById(id).classList.remove("show");
-      }
-
-      document
-        .getElementById("add-client-btn")
-        .addEventListener("click", () => {
-          document.getElementById("mc-name").value = "";
-          document.getElementById("mc-date").value = "";
-          document.getElementById("mc-drive").value = "";
-          openModal("modal-client");
-          setTimeout(() => document.getElementById("mc-name").focus(), 50);
-        });
-      document
-        .getElementById("mc-cancel")
-        .addEventListener("click", () => closeModal("modal-client"));
-      document.getElementById("mc-save").addEventListener("click", () => {
-        const n = document.getElementById("mc-name").value.trim(),
-          d = document.getElementById("mc-date").value.trim(),
-          drv = document.getElementById("mc-drive").value.trim();
-        if (!n) return;
-        const colors = partner === "neil" ? NEIL_COLORS : JACOB_COLORS;
-        ST[partner].clients.push({
-          name: n,
-          start: d || "",
-          color: colors[ST[partner].clients.length % colors.length],
-          checked: (ST.template || []).slice(),
-          tags: [],
-          archived: false,
-        });
-        if (drv.startsWith("http")) saveLink(n, drv);
-        save();
-        closeModal("modal-client");
-        render();
-      });
-      document
-        .getElementById("mp-cancel")
-        .addEventListener("click", () => closeModal("modal-phase"));
-      document.getElementById("mp-save").addEventListener("click", () => {
-        const n = document.getElementById("mp-name").value.trim();
-        if (!n) return;
-        const np = { id: "ph_" + Date.now(), label: n, tasks: [] };
-        ST.phases.push(np);
-        openPhases[np.id] = true;
-        save();
-        closeModal("modal-phase");
-        render();
-      });
-      document
-        .getElementById("mr-cancel")
-        .addEventListener("click", () => closeModal("modal-reassign"));
-      document.getElementById("mr-save").addEventListener("click", () => {
-        if (!reassignTask) return;
-        const tid = document.getElementById("mr-phase").value;
-        const sp = ST.phases.find((p) => p.id === reassignTask.phaseId),
-          tp = ST.phases.find((p) => p.id === tid);
-        if (!sp || !tp) return;
-        const i = sp.tasks.findIndex((t) => t.id === reassignTask.taskId);
-        if (i < 0) return;
-        const [moved] = sp.tasks.splice(i, 1);
-        tp.tasks.push(moved);
-        reassignTask = null;
-        save();
-        closeModal("modal-reassign");
-        render();
-      });
-      document.querySelectorAll(".modal-bg").forEach((bg) =>
-        bg.addEventListener("click", (e) => {
-          if (e.target === bg) bg.classList.remove("show");
-        }),
-      );
-      document.getElementById("mc-name").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") document.getElementById("mc-save").click();
-      });
-      document.getElementById("mp-name").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") document.getElementById("mp-save").click();
-      });
-
-      initApp();
+      init()
     </script>
   </body>
 </html>
