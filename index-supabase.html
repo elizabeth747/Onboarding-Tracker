@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding Tracker - Real-Time</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+    <style>
+      /* All styles from original index.html */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg: #f9f8f6; --surface: #fff; --surface2: #f2f1ee; --border: rgba(0, 0, 0, 0.09);
+        --border2: rgba(0, 0, 0, 0.16); --text: #1a1a18; --text2: #6b6a66; --text3: #a09f9b;
+        --green: #1d9e75; --green-bg: #e1f5ee; --green-text: #085041; --red: #993c1d;
+        --red-bg: #faece7; --red-text: #993c1d; --blue: #185fa5; --blue-bg: #e6f1fb;
+        --blue-text: #185fa5; --neil: #534ab7; --neil-bg: #eeedfe; --neil-text: #26215c;
+        --jacob: #b85a30; --jacob-bg: #faece7; --jacob-text: #4a1b0c; --r: 8px; --rl: 12px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1a1a18; --surface: #242422; --surface2: #2e2e2b; --border: rgba(255, 255, 255, 0.09);
+          --border2: rgba(255, 255, 255, 0.16); --text: #f0ede8; --text2: #9e9d99; --text3: #6b6a66;
+          --green-bg: #04342c; --green-text: #9fe1cb; --red-bg: #4a1b0c; --red-text: #f0997b;
+          --blue-bg: #042c53; --blue-text: #85b7eb; --neil-bg: #26215c; --neil-text: #cecbf6;
+          --jacob-bg: #4a1b0c; --jacob-text: #f5c4b3;
+        }
+      }
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+      nav { background: var(--surface); border-bottom: 0.5px solid var(--border2); position: sticky; top: 0; z-index: 50; padding: 0 1.25rem; }
+      .nav-inner { max-width: 1140px; margin: 0 auto; display: flex; align-items: center; gap: 10px; height: 52px; }
+      .app-name { font-size: 15px; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+      .partner-tabs { display: flex; gap: 3px; margin-left: 12px; }
+      .ptab { padding: 5px 16px; border-radius: var(--r); border: none; font-size: 13px; cursor: pointer; background: transparent; color: var(--text2); font-family: inherit; transition: all 0.15s; font-weight: 500; }
+      .ptab[data-p="neil"].active { background: var(--neil-bg); color: var(--neil-text); }
+      .ptab[data-p="jacob"].active { background: var(--jacob-bg); color: var(--jacob-text); }
+      .ptab:hover:not(.active) { background: var(--surface2); }
+      .nav-tabs { display: flex; gap: 2px; margin-left: auto; }
+      .nav-tab { padding: 5px 13px; border-radius: var(--r); border: none; font-size: 13px; cursor: pointer; background: transparent; color: var(--text2); font-family: inherit; transition: all 0.15s; }
+      .nav-tab.active { background: var(--surface2); color: var(--text); font-weight: 500; }
+      .nav-tab:hover:not(.active) { background: var(--surface2); }
+      .nav-tab#tab-client { display: none; }
+      .nav-add { padding: 5px 12px; border-radius: var(--r); border: 0.5px dashed var(--border2); font-size: 13px; cursor: pointer; background: transparent; color: var(--text3); font-family: inherit; transition: all 0.15s; white-space: nowrap; }
+      .nav-add:hover { color: var(--text2); border-color: var(--text3); }
+      #sync-status { font-size: 11px; color: var(--text3); white-space: nowrap; margin-left: auto; display: flex; align-items: center; gap: 5px; transition: opacity 0.3s; }
+      #sync-status .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); display: inline-block; flex-shrink: 0; }
+      #sync-status.saving .sync-dot { background: #f59e0b; animation: pulse-dot 0.8s infinite alternate; }
+      #sync-status.saved .sync-dot { background: #22c55e; }
+      #sync-status.updated .sync-dot { background: #3b82f6; }
+      @keyframes pulse-dot { from { opacity: 0.4; } to { opacity: 1; } }
+      main { max-width: 1140px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+      .partner-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; margin-left: 6px; vertical-align: 1px; }
+      .badge-neil { background: var(--neil-bg); color: var(--neil-text); }
+      .badge-jacob { background: var(--jacob-bg); color: var(--jacob-text); }
+      .dash-section-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+      .dash-section-hd h2 { font-size: 14px; font-weight: 500; white-space: nowrap; }
+      .divider { flex: 1; height: 0.5px; background: var(--border); }
+      .dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+      .client-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--rl); padding: 0.9rem 1rem; cursor: pointer; transition: border-color 0.15s; }
+      .client-card:hover { border-color: var(--border2); }
+      .cc-name { font-size: 13.5px; font-weight: 500; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .cc-date { font-size: 11px; color: var(--text3); margin-bottom: 9px; }
+      .cc-bar-bg { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 5px; }
+      .cc-bar-fill { height: 3px; border-radius: 2px; }
+      .cc-pct { font-size: 13px; font-weight: 500; }
+      .cc-meta { font-size: 11px; color: var(--text3); margin-top: 3px; }
+      .blocker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); display: inline-block; margin-right: 3px; vertical-align: 1px; }
+      .task-list { border: 0.5px solid var(--border); border-radius: var(--rl); overflow: hidden; background: var(--surface); }
+      .task-row { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border-bottom: 0.5px solid var(--border); background: var(--surface); transition: background 0.1s; }
+      .task-row:last-child { border-bottom: none; }
+      .task-row.done .task-name-text { text-decoration: line-through; color: var(--text3); }
+      .task-check { width: 18px; height: 18px; border: 1.5px solid var(--border2); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: all 0.15s; }
+      .task-row.done .task-check { background: var(--green); border-color: var(--green); }
+      .task-check i { font-size: 11px; color: white; display: none; }
+      .task-row.done .task-check i { display: block; }
+      .task-body { flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+      .task-name-text { font-size: 13.5px; color: var(--text); cursor: text; }
+      .task-name-input { font-size: 13.5px; color: var(--text); background: transparent; border: none; border-bottom: 1px solid var(--border2); outline: none; font-family: inherit; min-width: 180px; }
+      .tag { font-size: 11px; padding: 2px 7px; border-radius: 20px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; flex-shrink: 0; }
+      .tag-blocker { background: var(--red-bg); color: var(--red-text); }
+      .owner-badge { font-size: 11px; color: var(--text3); cursor: pointer; padding: 2px 6px; border-radius: var(--r); border: 0.5px solid transparent; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+      .owner-badge:hover { border-color: var(--border2); background: var(--surface2); color: var(--text2); }
+      .task-actions { display: flex; gap: 3px; margin-left: auto; flex-shrink: 0; opacity: 0; transition: opacity 0.15s; }
+      .task-row:hover .task-actions { opacity: 1; }
+      .icon-btn { width: 26px; height: 26px; border-radius: var(--r); border: none; background: transparent; color: var(--text3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all 0.15s; }
+      .icon-btn:hover { background: var(--surface2); color: var(--text2); }
+      .btn-sm { padding: 5px 11px; border-radius: var(--r); border: 0.5px solid var(--border2); font-size: 12px; cursor: pointer; background: var(--surface); color: var(--text2); font-family: inherit; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+      .btn-sm:hover { background: var(--surface2); color: var(--text); }
+      .phase-block { margin-bottom: 1rem; }
+      .phase-hd { display: flex; align-items: center; gap: 8px; padding: 5px 0; user-select: none; }
+      .phase-chevron { font-size: 14px; color: var(--text3); transition: transform 0.2s; cursor: pointer; flex-shrink: 0; }
+      .phase-chevron.open { transform: rotate(90deg); }
+      .phase-name-edit { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text2); flex: 1; background: transparent; border: none; border-bottom: 1px solid transparent; padding: 1px 2px; font-family: inherit; outline: none; }
+      .phase-name-edit:hover, .phase-name-edit:focus { border-bottom-color: var(--border2); }
+      .phase-prog { font-size: 12px; color: var(--text3); }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-inner">
+        <div class="app-name">Onboarding Tracker</div>
+        <div class="partner-tabs" id="partner-tabs"></div>
+        <div class="nav-tabs" id="nav-tabs"></div>
+        <button class="nav-add">+ Add</button>
+        <div id="sync-status">
+          <span class="sync-dot"></span>
+          <span id="sync-text">Ready</span>
+        </div>
+      </div>
+    </nav>
+    <main id="main"></main>
+
+    <script type="module">
+      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+      // Supabase Configuration
+      const SUPABASE_URL = 'https://hwscukgdmdjadpsxdqcs.supabase.co'
+      const SUPABASE_ANON_KEY = 'sb_publishable_CYvT963Rrl-bqzPHTJyXHA_jrZAZi_9'
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+      // State Management
+      let appState = {
+        clients: [],
+        phases: {}, // { clientId: [phases] }
+        tasks: {}, // { phaseId: [tasks] }
+        currentClientId: null,
+        subscriptions: []
+      }
+
+      // Sync Status Helper
+      function setSyncStatus(status) {
+        const syncStatus = document.getElementById('sync-status')
+        const syncText = document.getElementById('sync-text')
+        syncStatus.classList.remove('saving', 'saved', 'updated')
+        if (status === 'saving') {
+          syncStatus.classList.add('saving')
+          syncText.textContent = 'Saving...'
+        } else if (status === 'saved') {
+          syncStatus.classList.add('saved')
+          syncText.textContent = 'Saved'
+          setTimeout(() => { syncStatus.classList.remove('saved'); syncText.textContent = 'Ready'; }, 2000)
+        }
+      }
+
+      // Fetch Data from Supabase
+      async function loadClients() {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('clients')
+            .select('*')
+            .eq('archived', false)
+            .order('created_at', { ascending: false })
+          
+          if (error) throw error
+          appState.clients = data || []
+          renderUI()
+          setSyncStatus('saved')
+        } catch (err) {
+          console.error('Error loading clients:', err)
+          setSyncStatus('error')
+        }
+      }
+
+      async function loadPhases(clientId) {
+        try {
+          const { data, error } = await supabase
+            .from('phases')
+            .select('*')
+            .eq('client_id', clientId)
+            .order('display_order', { ascending: true })
+          
+          if (error) throw error
+          appState.phases[clientId] = data || []
+          renderUI()
+        } catch (err) {
+          console.error('Error loading phases:', err)
+        }
+      }
+
+      async function loadTasks(phaseId) {
+        try {
+          const { data, error } = await supabase
+            .from('tasks')
+            .select('*')
+            .eq('phase_id', phaseId)
+            .order('display_order', { ascending: true })
+          
+          if (error) throw error
+          appState.tasks[phaseId] = data || []
+          renderUI()
+        } catch (err) {
+          console.error('Error loading tasks:', err)
+        }
+      }
+
+      // Create Functions
+      async function addClient(name) {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('clients')
+            .insert([{ name, start_date: new Date().toISOString() }])
+            .select()
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadClients()
+        } catch (err) {
+          console.error('Error adding client:', err)
+        }
+      }
+
+      async function addPhase(clientId, name) {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('phases')
+            .insert([{ client_id: clientId, name }])
+            .select()
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadPhases(clientId)
+        } catch (err) {
+          console.error('Error adding phase:', err)
+        }
+      }
+
+      async function addTask(phaseId, name) {
+        setSyncStatus('saving')
+        try {
+          const { data, error } = await supabase
+            .from('tasks')
+            .insert([{ phase_id: phaseId, name, completed: false }])
+            .select()
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error adding task:', err)
+        }
+      }
+
+      // Update Functions
+      async function toggleTask(taskId, phaseId) {
+        const task = appState.tasks[phaseId]?.find(t => t.id === taskId)
+        if (!task) return
+
+        setSyncStatus('saving')
+        try {
+          const { error } = await supabase
+            .from('tasks')
+            .update({ completed: !task.completed })
+            .eq('id', taskId)
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error toggling task:', err)
+        }
+      }
+
+      async function updateTaskName(taskId, phaseId, newName) {
+        setSyncStatus('saving')
+        try {
+          const { error } = await supabase
+            .from('tasks')
+            .update({ name: newName })
+            .eq('id', taskId)
+          
+          if (error) throw error
+          setSyncStatus('saved')
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error updating task name:', err)
+        }
+      }
+
+      async function deleteTask(taskId, phaseId) {
+        try {
+          const { error } = await supabase
+            .from('tasks')
+            .delete()
+            .eq('id', taskId)
+          
+          if (error) throw error
+          await loadTasks(phaseId)
+        } catch (err) {
+          console.error('Error deleting task:', err)
+        }
+      }
+
+      // UI Rendering
+      function renderUI() {
+        const main = document.getElementById('main')
+        
+        if (!appState.currentClientId) {
+          // Show client list
+          main.innerHTML = `
+            <div class="dash-section-hd">
+              <h2>Clients</h2>
+              <div class="divider"></div>
+            </div>
+            <div class="dash-grid" id="client-grid"></div>
+          `
+          
+          const grid = document.getElementById('client-grid')
+          appState.clients.forEach(client => {
+            const card = document.createElement('div')
+            card.className = 'client-card'
+            card.innerHTML = `
+              <div class="cc-name">${client.name}</div>
+              <div class="cc-date">${new Date(client.created_at).toLocaleDateString()}</div>
+            `
+            card.onclick = () => {
+              appState.currentClientId = client.id
+              loadPhases(client.id)
+              renderUI()
+            }
+            grid.appendChild(card)
+          })
+        } else {
+          // Show client details with phases and tasks
+          const client = appState.clients.find(c => c.id === appState.currentClientId)
+          const phases = appState.phases[appState.currentClientId] || []
+          
+          main.innerHTML = `
+            <div class="dash-section-hd">
+              <h2>${client?.name || 'Client'}</h2>
+              <div class="divider"></div>
+            </div>
+            <div id="phases-container"></div>
+          `
+          
+          const container = document.getElementById('phases-container')
+          phases.forEach(phase => {
+            const tasks = appState.tasks[phase.id] || []
+            const taskHtml = tasks.map(task => `
+              <div class="task-row ${task.completed ? 'done' : ''}" data-task-id="${task.id}">
+                <div class="task-check" onclick="toggleTaskUI('${task.id}', '${phase.id}')">
+                  <i class="ti ti-check"></i>
+                </div>
+                <div class="task-body">
+                  <span class="task-name-text">${task.name}</span>
+                </div>
+                <button class="icon-btn" onclick="deleteTaskUI('${task.id}', '${phase.id}')">
+                  <i class="ti ti-trash"></i>
+                </button>
+              </div>
+            `).join('')
+            
+            const phaseHtml = `
+              <div class="phase-block">
+                <div class="phase-hd">
+                  <span class="phase-name-edit">${phase.name}</span>
+                  <span class="phase-prog">${tasks.filter(t => t.completed).length}/${tasks.length}</span>
+                </div>
+                <div class="task-list">
+                  ${taskHtml || '<div style="padding: 9px 13px; color: var(--text3);">No tasks yet</div>'}
+                </div>
+                <button class="btn-sm" onclick="addTaskUI('${phase.id}')" style="margin-top: 8px;">
+                  <i class="ti ti-plus"></i> Task
+                </button>
+              </div>
+            `
+            container.innerHTML += phaseHtml
+          })
+          
+          container.innerHTML += `
+            <button class="btn-sm" onclick="addPhaseUI()" style="margin-bottom: 1rem;">
+              <i class="ti ti-plus"></i> Phase
+            </button>
+            <button class="btn-sm" onclick="backToClients()" style="margin-left: 6px;">
+              ← Back
+            </button>
+          `
+        }
+      }
+
+      // Global Functions for inline onclick
+      window.toggleTaskUI = toggleTask
+      window.deleteTaskUI = deleteTask
+      window.backToClients = () => {
+        appState.currentClientId = null
+        renderUI()
+      }
+      window.addPhaseUI = async () => {
+        const name = prompt('Phase name:')
+        if (name) await addPhase(appState.currentClientId, name)
+      }
+      window.addTaskUI = async (phaseId) => {
+        const name = prompt('Task name:')
+        if (name) await addTask(phaseId, name)
+      }
+
+      // Setup Real-Time Subscriptions
+      function setupSubscriptions() {
+        // Subscribe to client changes
+        const clientSub = supabase
+          .channel('clients-changes')
+          .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'clients'
+          }, (payload) => {
+            console.log('Client changed:', payload)
+            loadClients()
+          })
+          .subscribe()
+        
+        appState.subscriptions.push(clientSub)
+      }
+
+      // Add Button Handler
+      document.querySelector('.nav-add').onclick = async () => {
+        const name = prompt('New client name:')
+        if (name) await addClient(name)
+      }
+
+      // Initialize App
+      async function init() {
+        setSyncStatus('saving')
+        await loadClients()
+        setupSubscriptions()
+        setSyncStatus('saved')
+      }
+
+      init()
+    </script>
+  </body>
+</html>
