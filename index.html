@@ -327,11 +327,23 @@ const DEFAULT_STATE={
 
 function migrateState(p){
   try{
-    [...p.neil.clients,...p.jacob.clients].forEach(c=>{if(!c.tags)c.tags=[];if(c.archived===undefined)c.archived=false;});
-    if(!p.tags)p.tags=[];if(!p.template)p.template=[];if(!p.driveLinks)p.driveLinks={};
+    // Firebase converts arrays to objects — convert them back
+    function toArr(v){if(!v)return[];if(Array.isArray(v))return v;return Object.values(v);}
+    [...p.neil.clients,...p.jacob.clients].forEach(c=>{
+      c.checked=toArr(c.checked);
+      c.tags=toArr(c.tags);
+      if(c.archived===undefined)c.archived=false;
+    });
+    p.phases=toArr(p.phases);
+    p.phases.forEach(ph=>{ph.tasks=toArr(ph.tasks);});
+    p.tags=toArr(p.tags);
+    p.template=toArr(p.template);
+    if(!p.driveLinks)p.driveLinks={};
+    p.neil.clients=toArr(p.neil.clients);
+    p.jacob.clients=toArr(p.jacob.clients);
     const order=DEFAULT_PHASES.map(ph=>ph.id);
     p.phases.sort((a,b)=>{const ai=order.indexOf(a.id),bi=order.indexOf(b.id);if(ai===-1&&bi===-1)return 0;if(ai===-1)return 1;if(bi===-1)return-1;return ai-bi;});
-  }catch(e){}
+  }catch(e){console.error("migrate error",e);}
   return p;
 }
 
