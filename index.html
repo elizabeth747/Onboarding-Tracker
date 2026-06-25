@@ -263,6 +263,7 @@ const OWNERS=["Partner","Elizabeth","Jessica"];
 const NEIL_COLORS=["#534AB7","#8F3456","#185FA5","#1D9E75","#B47015","#5F5E5A"];
 const JACOB_COLORS=["#B85A30","#3B6D11","#185FA5","#8F3456","#534AB7","#854F0B","#5F5E5A"];
 const TAG_PALETTE=["#E53935","#D81B60","#8E24AA","#3949AB","#1E88E5","#00897B","#43A047","#F4511E","#F6BF26","#616161"];
+const ZAPIER_WEBHOOK="https://hooks.zapier.com/hooks/catch/11646010/42sgljl/";
 
 const DEFAULT_PHASES=[
   {id:"pre",label:"Pre-start",tasks:[
@@ -327,7 +328,6 @@ const DEFAULT_STATE={
 
 function migrateState(p){
   try{
-    // Firebase converts arrays to objects — convert them back
     function toArr(v){if(!v)return[];if(Array.isArray(v))return v;return Object.values(v);}
     [...p.neil.clients,...p.jacob.clients].forEach(c=>{
       c.checked=toArr(c.checked);
@@ -369,12 +369,10 @@ function save(){
   },400);
 }
 
-// Real-time listener — Firebase pushes changes to all connected clients instantly
 let _initialized=false;
 onValue(STATE_REF, (snapshot)=>{
   const data=snapshot.val();
   if(!data){
-    // First ever load — seed with defaults
     set(STATE_REF, ST).then(()=>{
       _initialized=true;
       ST.phases.forEach(p=>openPhases[p.id]=true);
@@ -382,14 +380,13 @@ onValue(STATE_REF, (snapshot)=>{
     });
     return;
   }
-  if(_isSaving)return; // ignore echo of our own save
+  if(_isSaving)return;
   ST=migrateState(data);
   if(!_initialized){
     _initialized=true;
     ST.phases.forEach(p=>openPhases[p.id]=true);
     render();
   } else {
-    // Update from teammate
     const anyFocused=document.activeElement&&(document.activeElement.tagName==="INPUT"||document.activeElement.tagName==="TEXTAREA");
     if(!anyFocused){
       render();
@@ -433,6 +430,18 @@ function pct(ci){const t=totalTasks();return t?Math.round(doneCount(ci)/t*100):0
 function hasChecked(ci,tid){return clients()[ci].checked.includes(tid);}
 function toggle(ci,tid){const c=clients()[ci];const i=c.checked.indexOf(tid);if(i>=0)c.checked.splice(i,1);else c.checked.push(tid);save();}
 function pendingBlockers(ci){return ST.phases.flatMap(p=>p.tasks.filter(t=>t.blocker&&!hasChecked(ci,t.id)));}
+
+// ── Zapier notification ───────────────────────────────────────────────────────
+function notifyTextExpander(clientName, startDate){
+  fetch(ZAPIER_WEBHOOK,{
+    method:"POST",
+    body:JSON.stringify({
+      client_name:clientName,
+      start_date:startDate||"TBD",
+      partner_name:partner==="neil"?"Neil":"Jacob",
+    }),
+  }).catch(err=>console.error("Zapier error:",err));
+}
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function setPartner(p){partner=p;view="dashboard";activeTagFilters=new Set();document.getElementById("tab-client").style.display="none";document.getElementById("tab-dash").classList.add("active");document.getElementById("tab-client").classList.remove("active");document.querySelectorAll(".ptab").forEach(b=>{b.classList.toggle("active",b.dataset.p===p);});render();}
@@ -543,7 +552,7 @@ function renderClient(m){
       const list=document.createElement("div");list.className="task-list";
       tasks.forEach(task=>{
         const done=hasChecked(activeCI,task.id);const row=document.createElement("div");row.className=`task-row${done?" done":""}`;row.draggable=true;
-        row.innerHTML=`<i class="ti ti-grip-vertical drag-handle" aria-hidden="true"></i><div class="task-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="task-body"><span class="task-name-text">${task.name}</span>${task.blocker?'<span class="tag tag-blocker"><i class="ti ti-alert-circle" aria-hidden="true"></i> blocker</span>':""}<span class="owner-badge">${task.owner}</span></div><div class="task-actions"><button class="icon-btn" title="Edit task name" data-action="edit"><i class="ti ti-pencil" aria-hidden="true"></i></button><button class="icon-btn" title="Move to another phase" data-action="reassign"><i class="ti ti-arrows-move" aria-hidden="true"></i></button><button class="icon-btn${task.blocker?" is-red":""}" title="${task.blocker?"Remove blocker":"Mark as blocker"}" data-action="blocker"><i class="ti ti-alert-circle" aria-hidden="true"></i></button><button class="icon-btn del" title="Delete task" data-action="del"><i class="ti ti-trash" aria-hidden="true"></i></button></div>`;
+        row.innerHTML=`<i class="ti ti-grip-vertical drag-handle" aria-hidden="true"></i><div class="task-check"><i class="ti ti-check" aria-hidden="true"></i></div><div class="task-body"><span class="task-name-text">${task.name}</span>${task.blocker && !done?'<span class="tag tag-blocker"><i class="ti ti-alert-circle" aria-hidden="true"></i> blocker</span>':""}<span class="owner-badge">${task.owner}</span></div><div class="task-actions"><button class="icon-btn" title="Edit task name" data-action="edit"><i class="ti ti-pencil" aria-hidden="true"></i></button><button class="icon-btn" title="Move to another phase" data-action="reassign"><i class="ti ti-arrows-move" aria-hidden="true"></i></button><button class="icon-btn${task.blocker?" is-red":""}" title="${task.blocker?"Remove blocker":"Mark as blocker"}" data-action="blocker"><i class="ti ti-alert-circle" aria-hidden="true"></i></button><button class="icon-btn del" title="Delete task" data-action="del"><i class="ti ti-trash" aria-hidden="true"></i></button></div>`;
         row.querySelector(".task-check").addEventListener("click",e=>{e.stopPropagation();toggle(activeCI,task.id);render();});
         function startEditTaskName(){const inp=document.createElement("input");inp.className="task-name-input";inp.value=task.name;row.querySelector(".task-name-text").replaceWith(inp);inp.focus();inp.select();const fin=()=>{task.name=inp.value.trim()||task.name;save();render();};inp.addEventListener("blur",fin);inp.addEventListener("keydown",e=>{if(e.key==="Enter")fin();e.stopPropagation();});}
         row.querySelector(".task-name-text").addEventListener("dblclick",startEditTaskName);
@@ -575,7 +584,24 @@ function openModal(id){document.getElementById(id).classList.add("show");}
 function closeModal(id){document.getElementById(id).classList.remove("show");}
 document.getElementById("add-client-btn").addEventListener("click",()=>{document.getElementById("mc-name").value="";document.getElementById("mc-date").value="";document.getElementById("mc-drive").value="";openModal("modal-client");setTimeout(()=>document.getElementById("mc-name").focus(),50);});
 document.getElementById("mc-cancel").addEventListener("click",()=>closeModal("modal-client"));
-document.getElementById("mc-save").addEventListener("click",()=>{const n=document.getElementById("mc-name").value.trim(),d=document.getElementById("mc-date").value.trim(),drv=document.getElementById("mc-drive").value.trim();if(!n)return;const colors=partner==="neil"?NEIL_COLORS:JACOB_COLORS;ST[partner].clients.push({name:n,start:d||"",color:colors[ST[partner].clients.length%colors.length],checked:(ST.template||[]).slice(),tags:[],archived:false});if(drv.startsWith("http"))saveLink(n,drv);save();closeModal("modal-client");render();});
+document.getElementById("mc-save").addEventListener("click",()=>{
+  const n=document.getElementById("mc-name").value.trim(),
+        d=document.getElementById("mc-date").value.trim(),
+        drv=document.getElementById("mc-drive").value.trim();
+  if(!n)return;
+  const colors=partner==="neil"?NEIL_COLORS:JACOB_COLORS;
+  ST[partner].clients.push({
+    name:n,start:d||"",
+    color:colors[ST[partner].clients.length%colors.length],
+    checked:(ST.template||[]).slice(),
+    tags:[],archived:false
+  });
+  if(drv.startsWith("http"))saveLink(n,drv);
+  save();
+  closeModal("modal-client");
+  render();
+  notifyTextExpander(n, d);
+});
 document.getElementById("mp-cancel").addEventListener("click",()=>closeModal("modal-phase"));
 document.getElementById("mp-save").addEventListener("click",()=>{const n=document.getElementById("mp-name").value.trim();if(!n)return;const np={id:"ph_"+Date.now(),label:n,tasks:[]};ST.phases.push(np);openPhases[np.id]=true;save();closeModal("modal-phase");render();});
 document.getElementById("mr-cancel").addEventListener("click",()=>closeModal("modal-reassign"));
