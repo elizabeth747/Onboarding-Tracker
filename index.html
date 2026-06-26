@@ -433,14 +433,11 @@ function pendingBlockers(ci){return ST.phases.flatMap(p=>p.tasks.filter(t=>t.blo
 
 // ── Zapier notification ───────────────────────────────────────────────────────
 function notifyTextExpander(clientName, startDate){
-  fetch(ZAPIER_WEBHOOK,{
-    method:"POST",
-    body:JSON.stringify({
-      client_name:clientName,
-      start_date:startDate||"TBD",
-      partner_name:partner==="neil"?"Neil":"Jacob",
-    }),
-  }).catch(err=>console.error("Zapier error:",err));
+  const body=new FormData();
+  body.append("client_name",clientName);
+  body.append("start_date",startDate||"TBD");
+  body.append("partner_name",partner==="neil"?"Neil":"Jacob");
+  fetch(ZAPIER_WEBHOOK,{method:"POST",body}).catch(err=>console.error("Zapier error:",err));
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
